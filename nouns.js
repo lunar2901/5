@@ -1,14 +1,17 @@
 // nouns.js - Focus mode (1 noun at a time + accordion lists)
 import nounsA1 from './js/nouns-db-a1.js';
 import nounsA2 from './js/nouns-db-a2.js';
+import nounsB1 from './js/nouns-db-b1.js';
+import nounsB2 from './js/nouns-db-b2.js';
+import nounsC1 from './js/nouns-db-c1.js';
 import { initFocusMode } from './focus-mode.js';
 
 const nounsDB = {
   a1: nounsA1,
   a2: nounsA2,
-  b1: [],
-  b2: [],
-  c1: []
+  b1: nounsB1,
+  b2: nounsB2,
+  c1: nounsC1,
 };
 
 const levelBtns = document.querySelectorAll('.level-btn');
