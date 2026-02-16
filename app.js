@@ -286,4 +286,168 @@ function getVariants(v) {
     v.alternative ??
     v.phrasalVariants;
 
-  if
+  if (Array.isArray(va)) return va;
+  if (va && typeof va === 'object') return [va];
+  return [];
+}
+
+function normalizeConjugation(line, present, past, partizip2) {
+  if (line && typeof line === 'object') {
+    // if it's { present, past, partizip2 } etc.
+    const maybe = [line.present, line.past, line.partizip2, line.pp].map(asText).filter(Boolean);
+    if (maybe.length) return maybe.join(', ');
+    try { return JSON.stringify(line); } catch { return ''; }
+  }
+
+  const s = asText(line).trim();
+  if (s) return s;
+
+  const parts = [present, past, partizip2].map(asText).map(x => x.trim()).filter(x => x && x !== '—');
+  if (!parts.length) return '';
+  return parts.join(', ');
+}
+
+function asText(x) {
+  if (x == null) return '';
+  if (typeof x === 'string') return x;
+  if (typeof x === 'number' || typeof x === 'boolean') return String(x);
+  return '';
+}
+
+function isNonEmptyString(x) {
+  return typeof x === 'string' && x.trim().length > 0;
+}
+
+/* =========================
+   Card renderer
+   ========================= */
+
+function createVerbCard(v) {
+  const card = document.createElement('div');
+  card.className = 'verb-card';
+
+  const base = getVerbBase(v);
+  const typeText = getTypeText(v);
+  const forms = getForms(v);
+  const translations = getTranslations(v);
+  const examples = getExamples(v);
+  const variants = getVariants(v);
+
+  // prep(s)
+  const preps = asText(v.prepositions) || asText(v.preposition) || asText(v.prep);
+  const prepHtml = preps ? `<span class="prep-badge">${escapeHtml(preps)}</span>` : '';
+
+  // conjugation combined line (if present)
+  const conjLine =
+    normalizeConjugation(v.conjugationLine ?? v.conjugation ?? v.formsLine ?? v.forms ?? v.principalParts, forms.present, forms.past, forms.partizip2);
+
+  card.innerHTML = `
+    <div class="verb-header">
+      <div>
+        <div class="verb-base">${escapeHtml(base)}</div>
+        ${typeText ? `<div class="reflexive-marker">${escapeHtml(typeText)}</div>` : ''}
+      </div>
+    </div>
+
+    ${conjLine ? `
+      <div class="verb-info conjugation">
+        <span class="label">Conjugation:</span>
+        <span class="value">${escapeHtml(conjLine)}</span>
+      </div>
+    ` : ''}
+
+    <div class="verb-forms">
+      <div class="form-item">
+        <span class="form-label">Present</span>
+        <span class="form-value">${escapeHtml(forms.present)}</span>
+      </div>
+      <div class="form-item">
+        <span class="form-label">Past</span>
+        <span class="form-value">${escapeHtml(forms.past)}</span>
+      </div>
+      <div class="form-item" style="grid-column: 1 / -1;">
+        <span class="form-label">Partizip II</span>
+        <span class="form-value">${escapeHtml(forms.partizip2)}</span>
+      </div>
+    </div>
+
+    ${translations.length ? `
+      <div class="verb-info">
+        <span class="label">Translation:</span>
+        <span class="value">${escapeHtml(translations.join(', '))}</span>
+      </div>
+    ` : ''}
+
+    ${prepHtml ? `
+      <div class="verb-info">
+        <span class="label">Prep:</span>
+        <span class="value">${prepHtml}</span>
+      </div>
+    ` : ''}
+
+    ${variants.length ? `
+      <div class="variants-section">
+        <h4>Variants</h4>
+        <ul class="variants-list">
+          ${variants.map(vr => {
+            if (typeof vr === 'string') return `<li>${escapeHtml(vr)}</li>`;
+
+            const txt = vr.text || vr.name || vr.variant || vr.word || '';
+            const prep = vr.preps || vr.preposition || vr.prep || '';
+            const ex = vr.example || vr.sentence || vr.examples || '';
+
+            return `
+              <li>
+                ${escapeHtml(txt || JSON.stringify(vr))}
+                ${prep ? `<div class="variant-preps">${escapeHtml(String(prep))}</div>` : ''}
+                ${ex ? `<div class="variant-example">${escapeHtml(Array.isArray(ex) ? ex.join(' | ') : String(ex))}</div>` : ''}
+              </li>
+            `;
+          }).join('')}
+        </ul>
+      </div>
+    ` : ''}
+
+    ${examples.length ? `
+      <div class="examples-section">
+        <h4>Examples</h4>
+        <ul class="examples-list">
+          ${examples.slice(0, 4).map(ex => `<li>${escapeHtml(ex)}</li>`).join('')}
+        </ul>
+      </div>
+    ` : ''}
+  `;
+
+  return card;
+}
+
+/* =========================
+   Utilities
+   ========================= */
+
+function updateCounts() {
+  Object.keys(verbsDB).forEach(level => {
+    const badge = document.getElementById(`count-${level}`);
+    if (badge) badge.textContent = (verbsDB[level] || []).length;
+  });
+}
+
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape' && searchInput.value) {
+    searchInput.value = '';
+    searchInput.dispatchEvent(new Event('input'));
+  }
+});
+
+function escapeHtml(s) {
+  return String(s ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
