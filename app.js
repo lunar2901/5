@@ -44,24 +44,6 @@ clearSearchBtn.addEventListener('click', () => {
   searchInput.focus();
 });
 
-function filterVerbs(level, query) {
-  const list = verbsDB[level] || [];
-  if (!query) return list;
-
-  return list.filter(v => {
-    const base = getVerbBase(v);
-    const searchText = [
-      base,
-      v.preposition,
-      ...(v.translations || []),
-      ...(v.examples || []),
-      v.present || v.past || v.partizip2 || v.perfect || ''
-    ].filter(Boolean).join(' ').toLowerCase();
-
-    return searchText.includes(query);
-  });
-}
-
 function renderCurrent(query = '') {
   const rootId = 'verbs-list';
   const root = document.getElementById(rootId);
@@ -92,231 +74,216 @@ function renderCurrent(query = '') {
     level: currentLevel,
     storageKey: 'verbs',
 
-    getId: (v) => getVerbBase(v),        // stable unique key
-    getLabel: (v) => getVerbBase(v),     // shows in Learned/Not learned list
-    renderCard: (v) => createVerbCard(v) // your verb card UI
+    getId: (v, idx) => `${getVerbBase(v)}::${idx}`, // stable enough even if duplicates
+    getLabel: (v) => getVerbBase(v),
+    renderCard: (v) => createVerbCard(v)
   });
 }
+
+function filterVerbs(level, query) {
+  const list = verbsDB[level] || [];
+  if (!query) return list;
+
+  return list.filter(v => {
+    const base = getVerbBase(v);
+
+    const forms = getForms(v); // {present, past, partizip2, aux}
+    const translations = getTranslations(v);
+    const examples = getExamples(v);
+    const variants = getVariants(v);
+
+    const searchText = [
+      base,
+      getTypeText(v),
+      asText(v.preposition),
+      asText(v.prepositions),
+      forms.present,
+      forms.past,
+      forms.partizip2,
+      forms.aux,
+      ...translations,
+      ...examples,
+      ...variants.flatMap(x => (typeof x === 'string' ? [x] : Object.values(x).map(asText)))
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+
+    return searchText.includes(query);
+  });
+}
+
+/* =========================
+   Data extractors (robust)
+   ========================= */
 
 function getVerbBase(v) {
-  return v.infinitive || v.verb || v.word || '—';
+  // Try common keys
+  const direct =
+    v.base ??
+    v.infinitive ??
+    v.verb ??
+    v.word ??
+    v.lemma ??
+    v.name ??
+    v.title;
+
+  if (isNonEmptyString(direct)) return direct.trim();
+
+  // Try nested shapes
+  const nested =
+    v?.headword ??
+    v?.entry?.base ??
+    v?.entry?.infinitive ??
+    v?.entry?.word ??
+    v?.verb?.base ??
+    v?.verb?.infinitive;
+
+  if (isNonEmptyString(nested)) return nested.trim();
+
+  // As a last resort: if object has exactly one string property that looks like a verb
+  for (const [k, val] of Object.entries(v || {})) {
+    if (isNonEmptyString(val) && /[a-zäöüß]/i.test(val) && k.toLowerCase().includes('verb')) {
+      return val.trim();
+    }
+  }
+
+  return '—';
 }
 
-// ✅ Verb card using your existing CSS (.verb-card, .verb-forms, etc.)
-function createVerbCard(v) {
-  const card = document.createElement('div');
-  card.className = 'verb-card';
+function getTypeText(v) {
+  // Handles e.g. { type: "Verb (strong, irregular)" } or { strong:true, irregular:true }
+  const parts = [];
 
-  // --- Base / title ---
-  const base =
-    v.base ||
-    v.infinitive ||
-    v.verb ||
-    v.word ||
-    v.lemma ||
-    v.name ||
-    '—';
+  const raw = v.type ?? v.verbType ?? v.class ?? v.category;
+  if (isNonEmptyString(raw)) parts.push(raw);
 
-  // --- Type badge (optional) ---
-  const typeText =
-    v.type ||
-    v.verbType ||
-    v.class ||
-    (v.strong ? 'strong' : '') ||
-    (v.irregular ? 'irregular' : '');
+  if (v.reflexive === true || String(getVerbBase(v)).toLowerCase().startsWith('sich ')) {
+    parts.push('reflexive');
+  }
+  if (v.strong === true) parts.push('strong');
+  if (v.weak === true) parts.push('weak');
+  if (v.irregular === true) parts.push('irregular');
+  if (v.separable === true) parts.push('separable');
 
-  // --- Conjugation / forms ---
+  return parts.filter(Boolean).join(', ');
+}
+
+function getForms(v) {
+  // Return { present, past, partizip2, aux }
+  // Supports many key names and even combined principal parts strings.
   const present =
-    v.present || v.prasens || v.präsens || v.presens || v.ich || v.form_present || '—';
+    v.present ?? v.prasens ?? v.präsens ?? v.presens ?? v.präs ?? v.pras ??
+    v.forms?.present ??
+    v.conjugation?.present ??
+    v?.principalParts?.[0];
 
   const past =
-    v.past || v.prateritum || v.präteritum || v.simplePast || v.form_past || '—';
+    v.past ?? v.prateritum ?? v.präteritum ?? v.simplePast ??
+    v.forms?.past ??
+    v.conjugation?.past ??
+    v?.principalParts?.[1];
 
   const partizip2 =
-    v.partizip2 || v.partizipII || v.participle || v.pp || v.form_partizip2 || '—';
+    v.partizip2 ?? v.partizipII ?? v.participle ?? v.pp ?? v.perfectParticiple ??
+    v.forms?.partizip2 ??
+    v.conjugation?.partizip2 ??
+    v?.principalParts?.[2];
 
-  // Some DBs store one combined string like: "spricht, sprach, hat gesprochen"
-  const conjugationLine =
-    v.conjugationLine ||
-    v.conjugation ||
-    v.forms ||
-    v.principalParts ||
-    '';
+  // Auxiliary verb: haben/sein etc.
+  const aux =
+    v.aux ?? v.auxiliary ?? v.hilfsverb ??
+    v.forms?.aux ?? v.forms?.auxiliary ??
+    v.conjugation?.aux;
 
-  const conjugationText = normalizeConjugation(conjugationLine, present, past, partizip2);
+  // Some DBs have a combined string: "spricht, sprach, hat gesprochen"
+  const line =
+    v.conjugationLine ?? v.conjugation ?? v.formsLine ?? v.forms ?? v.principalPartsLine;
 
-  // --- Translations / meanings ---
-  const translations =
-    Array.isArray(v.translations) ? v.translations :
-    Array.isArray(v.meanings) ? v.meanings :
-    Array.isArray(v.translation) ? v.translation :
-    typeof v.translation === 'string' ? [v.translation] :
-    typeof v.meaning === 'string' ? [v.meaning] :
-    [];
+  const normalizedLine = normalizeConjugation(line, present, past, partizip2);
 
-  // --- Examples ---
-  const examples =
-    Array.isArray(v.examples) ? v.examples :
-    Array.isArray(v.sentences) ? v.sentences :
-    Array.isArray(v.example) ? v.example :
-    typeof v.example === 'string' ? [v.example] :
-    [];
+  // If present/past/partizip2 missing but normalizedLine exists, try to parse 3 parts
+  let p = asText(present);
+  let pa = asText(past);
+  let pp = asText(partizip2);
+  let a = asText(aux);
 
-  // --- Variants ---
-  const variants =
-    Array.isArray(v.variants) ? v.variants :
-    Array.isArray(v.variant) ? v.variant :
-    Array.isArray(v.alternatives) ? v.alternatives :
-    [];
-
-  // --- Preposition(s) ---
-  const preps =
-    v.prepositions ||
-    v.preposition ||
-    v.prep ||
-    '';
-
-  const prepHtml = preps
-    ? `<span class="prep-badge">${escapeHtml(String(preps))}</span>`
-    : '';
-
-  card.innerHTML = `
-    <div class="verb-header">
-      <div>
-        <div class="verb-base">${escapeHtml(String(base))}</div>
-        ${typeText ? `<div class="reflexive-marker">${escapeHtml(String(typeText))}</div>` : ''}
-      </div>
-    </div>
-
-    ${
-      conjugationText
-        ? `
-          <div class="verb-info conjugation">
-            <span class="label">Conjugation:</span>
-            <span class="value">${escapeHtml(conjugationText)}</span>
-          </div>
-        `
-        : ''
+  if ((!p || p === '—') && normalizedLine) {
+    const parts = normalizedLine.split(',').map(s => s.trim()).filter(Boolean);
+    if (parts.length >= 2) {
+      p = parts[0] || p;
+      pa = parts[1] || pa;
+      // third part might contain aux + participle ("hat gesprochen")
+      if (parts[2]) {
+        const third = parts[2];
+        const m = third.match(/^(hat|habe|hast|haben|seid|ist|bin|bist|sind|war|waren)\s+(.+)$/i);
+        if (m) {
+          // aux is the first word (hat/ist)
+          a = a || m[1];
+          pp = pp || m[2];
+        } else {
+          pp = pp || third;
+        }
+      }
     }
-
-    <div class="verb-forms">
-      <div class="form-item">
-        <span class="form-label">Present</span>
-        <span class="form-value">${escapeHtml(String(present))}</span>
-      </div>
-      <div class="form-item">
-        <span class="form-label">Past</span>
-        <span class="form-value">${escapeHtml(String(past))}</span>
-      </div>
-      <div class="form-item" style="grid-column: 1 / -1;">
-        <span class="form-label">Partizip II</span>
-        <span class="form-value">${escapeHtml(String(partizip2))}</span>
-      </div>
-    </div>
-
-    ${
-      translations.length
-        ? `
-          <div class="verb-info">
-            <span class="label">Translation:</span>
-            <span class="value">${escapeHtml(translations.join(', '))}</span>
-          </div>
-        `
-        : ''
-    }
-
-    ${
-      prepHtml
-        ? `
-          <div class="verb-info">
-            <span class="label">Prep:</span>
-            <span class="value">${prepHtml}</span>
-          </div>
-        `
-        : ''
-    }
-
-    ${
-      variants.length
-        ? `
-          <div class="variants-section">
-            <h4>Variants</h4>
-            <ul class="variants-list">
-              ${variants.map(vr => {
-                if (typeof vr === 'string') return `<li>${escapeHtml(vr)}</li>`;
-                const txt = vr.text || vr.name || vr.variant || JSON.stringify(vr);
-                const ex = vr.example || vr.sentence || '';
-                const prep = vr.preps || vr.preposition || '';
-                return `
-                  <li>
-                    ${escapeHtml(txt)}
-                    ${prep ? `<div class="variant-preps">${escapeHtml(String(prep))}</div>` : ''}
-                    ${ex ? `<div class="variant-example">${escapeHtml(String(ex))}</div>` : ''}
-                  </li>
-                `;
-              }).join('')}
-            </ul>
-          </div>
-        `
-        : ''
-    }
-
-    ${
-      examples.length
-        ? `
-          <div class="examples-section">
-            <h4>Examples</h4>
-            <ul class="examples-list">
-              ${examples.slice(0, 4).map(ex => `<li>${escapeHtml(String(ex))}</li>`).join('')}
-            </ul>
-          </div>
-        `
-        : ''
-    }
-  `;
-
-  return card;
-}
-
-function normalizeConjugation(line, present, past, partizip2) {
-  // If line is object -> stringify nicely
-  if (line && typeof line === 'object') {
-    try { return JSON.stringify(line); } catch { return ''; }
   }
 
-  const s = String(line || '').trim();
-  if (s) return s;
-
-  // If we have parts, build a simple line
-  const parts = [present, past, partizip2].map(x => String(x || '').trim()).filter(x => x && x !== '—');
-  if (!parts.length) return '';
-  return parts.join(', ');
+  return {
+    present: p || '—',
+    past: pa || '—',
+    partizip2: pp || '—',
+    aux: a || ''
+  };
 }
 
+function getTranslations(v) {
+  const t =
+    v.translations ??
+    v.meanings ??
+    v.translation ??
+    v.meaning ??
+    v.mainMeanings ??
+    v.mainMeaning ??
+    v.definition ??
+    v.definitions;
 
-function updateCounts() {
-  Object.keys(verbsDB).forEach(level => {
-    const badge = document.getElementById(`count-${level}`);
-    if (badge) badge.textContent = (verbsDB[level] || []).length;
-  });
-}
+  if (Array.isArray(t)) return t.map(asText).filter(Boolean);
 
-document.addEventListener('keydown', (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-    e.preventDefault();
-    searchInput.focus();
+  // Sometimes it's an object: { main: [...], notes: ... }
+  if (t && typeof t === 'object') {
+    const flat = [];
+    for (const val of Object.values(t)) {
+      if (Array.isArray(val)) flat.push(...val.map(asText));
+      else if (isNonEmptyString(val)) flat.push(val);
+    }
+    return flat.filter(Boolean);
   }
-  if (e.key === 'Escape' && searchInput.value) {
-    searchInput.value = '';
-    searchInput.dispatchEvent(new Event('input'));
-  }
-});
 
-function escapeHtml(s) {
-  return String(s ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+  if (isNonEmptyString(t)) return [t];
+
+  return [];
 }
+
+function getExamples(v) {
+  const ex =
+    v.examples ??
+    v.sentences ??
+    v.example ??
+    v.examplesList ??
+    v.usage ??
+    v.sampleSentences;
+
+  if (Array.isArray(ex)) return ex.map(asText).filter(Boolean);
+  if (isNonEmptyString(ex)) return [ex];
+  return [];
+}
+
+function getVariants(v) {
+  const va =
+    v.variants ??
+    v.variant ??
+    v.alternatives ??
+    v.alternative ??
+    v.phrasalVariants;
+
+  if
