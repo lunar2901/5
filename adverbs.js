@@ -1,13 +1,17 @@
 // adverbs.js - Focus mode (1 adverb at a time + accordion lists)
 import adverbsA1 from './js/adverbs-db-a1.js';
+import adverbsA2 from './js/adverbs-db-a2.js';
+import adverbsB1 from './js/adverbs-db-b1.js';
+import adverbsB2 from './js/adverbs-db-b2.js';
+import adverbsC1 from './js/adverbs-db-c1.js';
 import { initFocusMode } from './focus-mode.js';
 
 const adverbsDB = {
   a1: adverbsA1,
-  a2: [],
-  b1: [],
-  b2: [],
-  c1: []
+  a2: adverbsA2,
+  b1: adverbsB1,
+  b2: adverbsB2,
+  c1: adverbsC1,
 };
 
 const levelBtns = document.querySelectorAll('.level-btn');
