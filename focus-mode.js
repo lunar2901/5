@@ -195,12 +195,8 @@ export function initFocusMode({
         <div class="word-actions">
           <button type="button" class="word-btn" data-action="prev">← Prev</button>
           <button type="button" class="word-btn" data-action="next">Next →</button>
-          ${
-            currentLearned
-              ? `<button type="button" class="word-btn" data-action="unlearn">Unlearn</button>`
-              : `<button type="button" class="word-btn primary" data-action="learnNext">Learned ✓</button>`
-          }
         </div>
+        
       </section>
 
       <section class="word-card-host" id="focus-card-host"></section>
