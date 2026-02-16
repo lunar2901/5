@@ -1,12 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>German Verb Grammar</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>German Grammar A1–C2</title>
+  <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇩🇪</text></svg>">
+
+  <!-- Optional: small helpers without needing style.css changes -->
+  <style>
+    /* Keeps layout readable even if style.css doesn't cover these */
+    .tag { display:inline-block; padding:.15rem .5rem; border-radius:999px; font-size:.85rem; margin-right:.35rem; border:1px solid currentColor; opacity:.9; }
+    .tag.a1 { }
+    .tag.a2 { }
+    .tag.b1 { }
+    .tag.b2 { }
+    .tag.c1 { }
+    .tag.c2 { }
+    .note { opacity:.9; }
+    .example-box code { white-space: nowrap; }
+    details { margin-top: .75rem; }
+    details > summary { cursor: pointer; font-weight: 700; }
+    .two-col { display:grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 900px) { .two-col { grid-template-columns: 1fr 1fr; } }
+    .toc a { display:inline-block; margin:.25rem .5rem .25rem 0; }
+    .kicker { opacity:.9; margin-top:.25rem; }
+    .mini-table { width:100%; border-collapse: collapse; margin-top:.5rem; }
+    .mini-table th, .mini-table td { border: 1px solid rgba(0,0,0,.12); padding:.5rem; vertical-align: top; }
+  </style>
 </head>
+
 <body>
   <header class="main-header">
     <div class="container">
@@ -19,6 +42,7 @@
           </svg>
           <h1>German Verbs</h1>
         </div>
+
         <nav class="main-nav">
           <a href="index.html" class="nav-link">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -26,24 +50,28 @@
             </svg>
             Verbs
           </a>
+
           <a href="nouns.html" class="nav-link">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
             </svg>
             Nouns
           </a>
+
           <a href="adjectives.html" class="nav-link">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"></circle>
             </svg>
             Adjectives
           </a>
+
           <a href="adverbs.html" class="nav-link">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
             </svg>
             Adverbs
           </a>
+
           <a href="practice.html" class="nav-link">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -51,6 +79,7 @@
             </svg>
             Practice
           </a>
+
           <a href="grammar.html" class="nav-link active">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -65,386 +94,564 @@
 
   <main class="main-content grammar-page">
     <div class="container">
+
       <!-- Grammar Header -->
       <section class="grammar-header">
-        <h2>German Verb Grammar Guide</h2>
-        <p>Essential rules and patterns for mastering German verbs</p>
+        <h2>German Grammar Guide (A1–C2)</h2>
+        <p class="kicker">
+          A structured, level-based grammar reference with thorough explanations and examples.
+        </p>
+        <p class="note">
+          <span class="tag a1">A1</span>
+          <span class="tag a2">A2</span>
+          <span class="tag b1">B1</span>
+          <span class="tag b2">B2</span>
+          <span class="tag c1">C1</span>
+          <span class="tag c2">C2</span>
+          Labels show the typical CEFR level where the topic becomes essential.
+        </p>
       </section>
 
       <!-- Table of Contents -->
       <section class="toc-section">
         <h3>Quick Navigation</h3>
         <nav class="toc">
-          <a href="#verb-tenses">Verb Tenses</a>
-          <a href="#separable-verbs">Separable Verbs</a>
-          <a href="#reflexive-verbs">Reflexive Verbs</a>
-          <a href="#prepositions">Verbs with Prepositions</a>
-          <a href="#word-order">Word Order</a>
-          <a href="#modal-verbs">Modal Verbs</a>
+          <a href="#a1">A1 Foundations</a>
+          <a href="#a2">A2 Expansion</a>
+          <a href="#b1">B1 Independence</a>
+          <a href="#b2">B2 Upper-Intermediate</a>
+          <a href="#c1">C1 Advanced</a>
+          <a href="#c2">C2 Mastery</a>
+          <a href="#reference">Reference Tables</a>
+          <a href="#troubleshooting">Common Mistakes</a>
         </nav>
       </section>
 
-      <!-- Grammar Sections -->
       <div class="grammar-content">
-        <!-- Verb Tenses -->
-        <section id="verb-tenses" class="grammar-section">
-          <h3>1. Verb Tenses (Zeitformen)</h3>
-          
-          <div class="subsection">
-            <h4>Present Tense (Präsens)</h4>
-            <p>Used for current actions, general truths, and future events (with time expressions).</p>
-            <div class="example-box">
-              <p><strong>Example:</strong> <em>gehen</em> (to go)</p>
-              <ul>
-                <li>ich gehe (I go)</li>
-                <li>du gehst (you go)</li>
-                <li>er/sie/es geht (he/she/it goes)</li>
-                <li>wir gehen (we go)</li>
-                <li>ihr geht (you all go)</li>
-                <li>sie/Sie gehen (they/you formal go)</li>
-              </ul>
+
+        <!-- ====================== A1 ====================== -->
+        <section id="a1" class="grammar-section">
+          <h3><span class="tag a1">A1</span> Foundations</h3>
+          <p>Core sentence building: present tense, basic cases, articles, and everyday structures.</p>
+
+          <div class="two-col">
+            <div class="subsection">
+              <h4>1) Sentence Basics: Verb-Second (V2) <span class="tag a1">A1</span></h4>
+              <p>
+                In a German main clause, the <strong>conjugated verb is in position 2</strong>.
+                Position 1 can be the subject or any other element (time/place/object) for emphasis.
+              </p>
+              <div class="example-box">
+                <p><strong>Neutral:</strong> Ich <strong>gehe</strong> heute ins Kino.</p>
+                <p><strong>Time first:</strong> Heute <strong>gehe</strong> ich ins Kino.</p>
+                <p><strong>Place first:</strong> Ins Kino <strong>gehe</strong> ich heute.</p>
+              </div>
+
+              <details>
+                <summary>Questions & negation</summary>
+                <p><strong>Yes/No question:</strong> verb comes first.</p>
+                <div class="example-box">
+                  <p><strong>Gehst</strong> du heute ins Kino?</p>
+                </div>
+                <p><strong>W-questions:</strong> question word first, verb second.</p>
+                <div class="example-box">
+                  <p><strong>Wann</strong> gehst du ins Kino?</p>
+                  <p><strong>Warum</strong> lernst du Deutsch?</p>
+                </div>
+                <p><strong>Nicht</strong> negates verbs/phrases; <strong>kein</strong> negates nouns with no article.</p>
+                <div class="example-box">
+                  <p>Ich komme <strong>nicht</strong>. (I’m not coming.)</p>
+                  <p>Ich habe <strong>kein</strong> Auto. (I have no car.)</p>
+                </div>
+              </details>
+            </div>
+
+            <div class="subsection">
+              <h4>2) Present Tense (Präsens) <span class="tag a1">A1</span></h4>
+              <p>
+                Used for <strong>now</strong>, <strong>habit</strong>, and often <strong>future</strong> with time words.
+                Regular endings: -e, -st, -t, -en, -t, -en.
+              </p>
+              <div class="example-box">
+                <p><strong>machen</strong> (to do/make)</p>
+                <ul>
+                  <li>ich mach<strong>e</strong></li>
+                  <li>du mach<strong>st</strong></li>
+                  <li>er/sie/es mach<strong>t</strong></li>
+                  <li>wir mach<strong>en</strong></li>
+                  <li>ihr mach<strong>t</strong></li>
+                  <li>sie/Sie mach<strong>en</strong></li>
+                </ul>
+                <p>Ich <strong>gehe</strong> morgen zum Arzt. (future meaning)</p>
+              </div>
+
+              <details>
+                <summary>Important irregulars (very common)</summary>
+                <div class="example-box">
+                  <p><strong>sein</strong>: ich bin, du bist, er ist, wir sind, ihr seid, sie/Sie sind</p>
+                  <p><strong>haben</strong>: ich habe, du hast, er hat, wir haben, ihr habt, sie/Sie haben</p>
+                  <p><strong>werden</strong>: ich werde, du wirst, er wird, wir werden, ihr werdet, sie/Sie werden</p>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="subsection">
+              <h4>3) Nouns, Gender, Articles <span class="tag a1">A1</span></h4>
+              <p>
+                Nouns have gender: <strong>der</strong> (m), <strong>die</strong> (f), <strong>das</strong> (n).
+                Plural is often unpredictable → learn the plural with the noun.
+              </p>
+              <div class="example-box">
+                <p>der Tisch – die Tisch<strong>e</strong></p>
+                <p>die Frau – die Frau<strong>en</strong></p>
+                <p>das Kind – die Kind<strong>er</strong></p>
+              </div>
+
+              <details>
+                <summary>Indefinite articles & plural</summary>
+                <div class="example-box">
+                  <p>ein Tisch, eine Frau, ein Kind</p>
+                  <p><strong>No</strong> indefinite article in plural: Ich habe Bücher. (not *eine Bücher*)</p>
+                </div>
+              </details>
+            </div>
+
+            <div class="subsection">
+              <h4>4) Cases: Nominative & Accusative <span class="tag a1">A1</span></h4>
+              <p>
+                German marks function via cases.
+                <strong>Nominative</strong> is usually the subject; <strong>accusative</strong> is the direct object.
+              </p>
+              <table class="grammar-table">
+                <tr><th></th><th>der</th><th>die</th><th>das</th><th>plural</th></tr>
+                <tr><td><strong>Nominative</strong></td><td>der</td><td>die</td><td>das</td><td>die</td></tr>
+                <tr><td><strong>Accusative</strong></td><td>den</td><td>die</td><td>das</td><td>die</td></tr>
+              </table>
+              <div class="example-box">
+                <p><strong>Der</strong> Mann sieht <strong>den</strong> Hund.</p>
+                <p><strong>Die</strong> Frau kauft <strong>das</strong> Brot.</p>
+              </div>
+
+              <details>
+                <summary>Personal pronouns (Nom/Akk)</summary>
+                <table class="mini-table">
+                  <tr><th></th><th>Nominative</th><th>Accusative</th></tr>
+                  <tr><td>1st</td><td>ich / wir</td><td>mich / uns</td></tr>
+                  <tr><td>2nd</td><td>du / ihr</td><td>dich / euch</td></tr>
+                  <tr><td>3rd</td><td>er/sie/es / sie</td><td>ihn/sie/es / sie</td></tr>
+                  <tr><td>formal</td><td>Sie</td><td>Sie</td></tr>
+                </table>
+                <div class="example-box">
+                  <p>Er besucht <strong>mich</strong>. / Ich besuche <strong>ihn</strong>.</p>
+                </div>
+              </details>
             </div>
           </div>
 
           <div class="subsection">
-            <h4>Simple Past (Präteritum)</h4>
-            <p>Mainly used in written German for narratives and formal contexts.</p>
-            <div class="example-box">
-              <p><strong>Regular:</strong> machen → ich machte (I made/did)</p>
-              <p><strong>Irregular:</strong> gehen → ich ging (I went)</p>
+            <h4>5) Basic Prepositions <span class="tag a1">A1</span></h4>
+            <p>Some prepositions require a fixed case. Learn them as “preposition + case”.</p>
+            <div class="two-col">
+              <div class="example-box">
+                <p><strong>Accusative:</strong> für, ohne, durch, gegen, um</p>
+                <p>Ich lerne Deutsch <strong>für</strong> die Arbeit.</p>
+              </div>
+              <div class="example-box">
+                <p><strong>Dative:</strong> mit, nach, bei, seit, von, zu</p>
+                <p>Ich fahre <strong>mit</strong> dem Bus. / Ich wohne <strong>bei</strong> meinen Eltern.</p>
+              </div>
             </div>
+
+            <details>
+              <summary>Two-way prepositions (Akk/Dat): location vs direction</summary>
+              <p><strong>in, an, auf, unter, über, vor, hinter, neben, zwischen</strong></p>
+              <p><strong>Dative</strong> = location (where?), <strong>Accusative</strong> = direction (where to?).</p>
+              <div class="example-box">
+                <p>Ich bin <strong>in dem</strong> Zimmer. (Where? → Dat)</p>
+                <p>Ich gehe <strong>in das</strong> Zimmer. (Where to? → Akk)</p>
+                <p>Contractions: in dem → <strong>im</strong>, zu dem → <strong>zum</strong>, zu der → <strong>zur</strong></p>
+              </div>
+            </details>
           </div>
+        </section>
+
+        <!-- ====================== A2 ====================== -->
+        <section id="a2" class="grammar-section">
+          <h3><span class="tag a2">A2</span> Expansion</h3>
+          <p>Past tense in speech, separable verbs, dative, adjective endings basics, and common clause patterns.</p>
 
           <div class="subsection">
-            <h4>Present Perfect (Perfekt)</h4>
-            <p>The most common past tense in spoken German. Formed with <em>haben</em> or <em>sein</em> + past participle.</p>
+            <h4>1) Perfekt (Present Perfect) <span class="tag a2">A2</span></h4>
+            <p>
+              Most common past tense in spoken German: <strong>haben/sein + Partizip II</strong>.
+              The participle usually goes to the end of the clause.
+            </p>
             <div class="example-box">
-              <p><strong>With haben:</strong> Ich <strong>habe</strong> gemacht. (I have done/I did)</p>
-              <p><strong>With sein:</strong> Ich <strong>bin</strong> gegangen. (I have gone/I went)</p>
+              <p>Ich <strong>habe</strong> Pizza <strong>gegessen</strong>.</p>
+              <p>Ich <strong>bin</strong> nach Hause <strong>gegangen</strong>.</p>
             </div>
             <div class="tip-box">
-              <strong>💡 Tip:</strong> Use <em>sein</em> with verbs of movement (gehen, fahren, kommen) and state change (werden, sterben, aufwachen).
+              <strong>💡 Rule of thumb:</strong> use <em>sein</em> with movement/change of state (gehen, kommen, fahren, einschlafen, sterben, werden).
             </div>
-          </div>
 
-          <div class="subsection">
-            <h4>Future Tense (Futur I)</h4>
-            <p>Formed with <em>werden</em> + infinitive. Often replaced by present tense with time expressions.</p>
-            <div class="example-box">
-              <p>Ich <strong>werde</strong> morgen gehen. (I will go tomorrow.)</p>
-              <p>OR: Ich gehe morgen. (More common)</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Separable Verbs -->
-        <section id="separable-verbs" class="grammar-section">
-          <h3>2. Separable Verbs (Trennbare Verben)</h3>
-          <p>Many German verbs have prefixes that separate in main clauses. The prefix moves to the end of the sentence.</p>
-          
-          <div class="subsection">
-            <h4>Common Separable Prefixes</h4>
-            <div class="prefix-grid">
-              <div class="prefix-item"><strong>ab-</strong> (away, off)</div>
-              <div class="prefix-item"><strong>an-</strong> (at, on)</div>
-              <div class="prefix-item"><strong>auf-</strong> (up, open)</div>
-              <div class="prefix-item"><strong>aus-</strong> (out)</div>
-              <div class="prefix-item"><strong>ein-</strong> (in, into)</div>
-              <div class="prefix-item"><strong>mit-</strong> (with, along)</div>
-              <div class="prefix-item"><strong>vor-</strong> (before, ahead)</div>
-              <div class="prefix-item"><strong>zu-</strong> (to, closed)</div>
-            </div>
-          </div>
-
-          <div class="subsection">
-            <h4>Examples</h4>
-            <div class="example-box">
-              <p><strong>ausgehen</strong> (to go out)</p>
+            <details>
+              <summary>How to build the participle</summary>
               <ul>
-                <li>Infinitive: Ich möchte heute Abend <strong>ausgehen</strong>.</li>
-                <li>Present: Ich gehe heute Abend <strong>aus</strong>.</li>
-                <li>Past: Ich bin gestern <strong>ausgegangen</strong>.</li>
+                <li><strong>Regular:</strong> ge + stem + t → machen → gemacht</li>
+                <li><strong>Irregular:</strong> ge + stem + en (often) → gehen → gegangen</li>
+                <li><strong>Separable prefix:</strong> prefix + ge + stem + t/en → aufmachen → aufgemacht</li>
+                <li><strong>Inseparable prefix:</strong> no “ge-” → besuchen → besucht, verstehen → verstanden</li>
               </ul>
-            </div>
-            <div class="example-box">
-              <p><strong>aufstehen</strong> (to get up)</p>
-              <ul>
-                <li>Infinitive: Ich muss früh <strong>aufstehen</strong>.</li>
-                <li>Present: Ich stehe um 7 Uhr <strong>auf</strong>.</li>
-                <li>Past: Ich bin um 7 Uhr <strong>aufgestanden</strong>.</li>
-              </ul>
-            </div>
+            </details>
           </div>
 
-          <div class="tip-box">
-            <strong>⚠️ Important:</strong> The prefix doesn't separate in subordinate clauses or with modal verbs!
-          </div>
-        </section>
-
-        <!-- Reflexive Verbs -->
-        <section id="reflexive-verbs" class="grammar-section">
-          <h3>3. Reflexive Verbs (Reflexive Verben)</h3>
-          <p>Reflexive verbs use reflexive pronouns (mich, dich, sich, uns, euch, sich) that refer back to the subject.</p>
-          
           <div class="subsection">
-            <h4>Reflexive Pronouns</h4>
+            <h4>2) Dative Case (Wem?) <span class="tag a2">A2</span></h4>
+            <p>
+              Dative often marks the indirect object (to/for whom?), and is required after many prepositions.
+            </p>
             <table class="grammar-table">
-              <tr>
-                <th>Person</th>
-                <th>Accusative</th>
-                <th>Dative</th>
-              </tr>
-              <tr>
-                <td>ich</td>
-                <td>mich</td>
-                <td>mir</td>
-              </tr>
-              <tr>
-                <td>du</td>
-                <td>dich</td>
-                <td>dir</td>
-              </tr>
-              <tr>
-                <td>er/sie/es</td>
-                <td>sich</td>
-                <td>sich</td>
-              </tr>
-              <tr>
-                <td>wir</td>
-                <td>uns</td>
-                <td>uns</td>
-              </tr>
-              <tr>
-                <td>ihr</td>
-                <td>euch</td>
-                <td>euch</td>
-              </tr>
-              <tr>
-                <td>sie/Sie</td>
-                <td>sich</td>
-                <td>sich</td>
-              </tr>
+              <tr><th></th><th>der</th><th>die</th><th>das</th><th>plural</th></tr>
+              <tr><td><strong>Dative</strong></td><td>dem</td><td>der</td><td>dem</td><td>den (+n)</td></tr>
             </table>
+            <div class="example-box">
+              <p>Ich gebe <strong>dem</strong> Mann <strong>das</strong> Buch.</p>
+              <p>Ich helfe <strong>der</strong> Frau.</p>
+              <p>Ich spreche mit <strong>den</strong> Kind<strong>ern</strong>. (plural often adds -n)</p>
+            </div>
+
+            <details>
+              <summary>Common dative verbs</summary>
+              <div class="example-box">
+                <p>helfen, danken, gefallen, gehören, antworten, passen, zuhören, glauben</p>
+                <p>Das Hemd <strong>gefällt</strong> mir.</p>
+                <p>Ich <strong>danke</strong> Ihnen.</p>
+              </div>
+            </details>
           </div>
 
           <div class="subsection">
-            <h4>Common Reflexive Verbs</h4>
-            <div class="example-box">
-              <p><strong>sich freuen</strong> (to be happy)</p>
-              <ul>
-                <li>Ich freue <strong>mich</strong> auf das Wochenende.</li>
-                <li>Sie freut <strong>sich</strong> über das Geschenk.</li>
-              </ul>
+            <h4>3) Separable & Inseparable Verbs <span class="tag a2">A2</span></h4>
+            <p>
+              Separable prefixes split in main clauses; inseparable prefixes never split (be-, ver-, er-, ent-, zer-, miss-, ge-).
+            </p>
+            <div class="two-col">
+              <div class="example-box">
+                <p><strong>Separable:</strong> aufstehen</p>
+                <p>Ich <strong>stehe</strong> um 7 Uhr <strong>auf</strong>.</p>
+                <p>Ich bin um 7 Uhr <strong>aufgestanden</strong>.</p>
+              </div>
+              <div class="example-box">
+                <p><strong>Inseparable:</strong> besuchen</p>
+                <p>Ich <strong>besuche</strong> meine Oma.</p>
+                <p>Ich habe meine Oma <strong>besucht</strong>.</p>
+              </div>
             </div>
+
+            <details>
+              <summary>Stress test (helpful trick)</summary>
+              <p>
+                Often separable prefixes are stressed (AUSgehen), inseparable are not (beSUchen).
+                Not perfect, but helpful.
+              </p>
+            </details>
+          </div>
+
+          <div class="subsection">
+            <h4>4) Modal Verbs & Word Order <span class="tag a2">A2</span></h4>
+            <p>
+              Modal is conjugated in position 2; the main verb goes to the end in infinitive.
+            </p>
             <div class="example-box">
-              <p><strong>sich erinnern</strong> (to remember)</p>
-              <ul>
-                <li>Ich erinnere <strong>mich</strong> an dich.</li>
-                <li>Erinnerst du <strong>dich</strong> an den Film?</li>
-              </ul>
+              <p>Ich <strong>muss</strong> heute länger <strong>arbeiten</strong>.</p>
+              <p>Wir <strong>wollen</strong> ins Museum <strong>gehen</strong>.</p>
             </div>
+
+            <details>
+              <summary>Negation placement with modals</summary>
+              <div class="example-box">
+                <p>Ich kann <strong>nicht</strong> kommen. (negates “can come”) </p>
+                <p>Ich kann heute <strong>nicht</strong> kommen. (time + negation)</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="subsection">
+            <h4>5) Subordinate Clauses: <em>dass / weil / wenn</em> <span class="tag a2">A2</span></h4>
+            <p>
+              In subordinate clauses, the conjugated verb goes to the <strong>end</strong>.
+              Main clause remains V2.
+            </p>
             <div class="example-box">
-              <p><strong>sich interessieren für</strong> (to be interested in)</p>
+              <p>Ich denke, <strong>dass</strong> er heute <strong>kommt</strong>.</p>
+              <p>Ich bleibe zu Hause, <strong>weil</strong> ich krank <strong>bin</strong>.</p>
+              <p><strong>Wenn</strong> es regnet, <strong>bleibe</strong> ich zu Hause.</p>
+            </div>
+
+            <details>
+              <summary>Comma rule</summary>
+              <p>German subordinate clauses are normally separated by a comma.</p>
+            </details>
+          </div>
+
+          <div class="subsection">
+            <h4>6) Adjective Basics (Attributive) <span class="tag a2">A2</span></h4>
+            <p>
+              When an adjective comes before a noun (attributive), it takes an ending.
+              The ending depends on <strong>case + gender + article type</strong>.
+            </p>
+            <div class="example-box">
+              <p>ein klein<strong>es</strong> Kind</p>
+              <p>der klein<strong>e</strong> Hund</p>
+              <p>mit dem klein<strong>en</strong> Hund (dative)</p>
+            </div>
+
+            <details>
+              <summary>Practical learning approach</summary>
               <ul>
-                <li>Ich interessiere <strong>mich</strong> für Kunst.</li>
-                <li>Wofür interessierst du <strong>dich</strong>?</li>
+                <li>Start with common patterns: <strong>der/ein</strong> + adjective endings in nominative/accusative.</li>
+                <li>Then learn dative patterns (often <strong>-en</strong>).</li>
               </ul>
+            </details>
+          </div>
+        </section>
+
+        <!-- ====================== B1 ====================== -->
+        <section id="b1" class="grammar-section">
+          <h3><span class="tag b1">B1</span> Independence</h3>
+          <p>Narration, opinions, relative clauses, passive basics, Konjunktiv II for politeness, and more complex connectors.</p>
+
+          <div class="subsection">
+            <h4>1) Präteritum vs Perfekt <span class="tag b1">B1</span></h4>
+            <p>
+              <strong>Perfekt</strong> dominates spoken German, but <strong>Präteritum</strong> is common in writing and with
+              a few frequent verbs in speech: <em>sein, haben, werden, wissen, denken, finden, geben, gehen</em> (varies).
+            </p>
+            <div class="example-box">
+              <p>Gestern <strong>war</strong> ich müde. (common in speech)</p>
+              <p>Früher <strong>hatte</strong> ich mehr Zeit.</p>
+              <p>Dann <strong>ging</strong> er nach Hause. (narrative)</p>
+            </div>
+          </div>
+
+          <div class="subsection">
+            <h4>2) Genitive (Wessen?) <span class="tag b1">B1</span></h4>
+            <p>
+              Genitive marks possession/association. In everyday speech it’s often replaced by <em>von + dative</em>,
+              but genitive is important in formal writing.
+            </p>
+            <div class="example-box">
+              <p><strong>Genitive:</strong> Das ist das Auto <strong>des</strong> Mann<strong>es</strong>.</p>
+              <p><strong>Alternative:</strong> Das ist das Auto <strong>von dem</strong> Mann.</p>
+              <p>Die Tasche <strong>der</strong> Frau.</p>
+            </div>
+
+            <details>
+              <summary>Genitive prepositions</summary>
+              <div class="example-box">
+                <p>wegen, trotz, während, statt/anstatt, innerhalb, außerhalb</p>
+                <p><strong>Wegen</strong> des Wetters bleiben wir zu Hause.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="subsection">
+            <h4>3) Relative Clauses (Relativsätze) <span class="tag b1">B1</span></h4>
+            <p>
+              Use relative pronouns (<em>der/die/das</em> etc.) to add information about a noun.
+              The relative pronoun’s <strong>gender/number</strong> comes from the noun, but its <strong>case</strong>
+              comes from its role <em>inside the relative clause</em>.
+            </p>
+            <div class="example-box">
+              <p>Das ist der Mann, <strong>der</strong> hier wohnt. (subject → nominative)</p>
+              <p>Das ist der Mann, <strong>den</strong> ich kenne. (object → accusative)</p>
+              <p>Das ist der Mann, <strong>dem</strong> ich helfe. (dative)</p>
+            </div>
+
+            <details>
+              <summary>Relative adverbs: wo, wohin, woher</summary>
+              <div class="example-box">
+                <p>Das ist die Stadt, <strong>in der</strong> ich geboren bin.</p>
+                <p>Das ist die Stadt, <strong>wo</strong> ich geboren bin. (informal)</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="subsection">
+            <h4>4) Passive Voice (Vorgangspassiv) <span class="tag b1">B1</span></h4>
+            <p>
+              Passive focuses on the action/result rather than the doer.
+              Form: <strong>werden + Partizip II</strong>.
+            </p>
+            <div class="example-box">
+              <p>Aktiv: Der Koch kocht die Suppe.</p>
+              <p>Passiv: Die Suppe <strong>wird</strong> (vom Koch) <strong>gekocht</strong>.</p>
+              <p>Präteritum: Die Suppe <strong>wurde</strong> gekocht.</p>
+              <p>Perfekt: Die Suppe <strong>ist</strong> gekocht <strong>worden</strong>.</p>
+            </div>
+
+            <details>
+              <summary>How to add the agent</summary>
+              <p><strong>von</strong> (by) for people/agents; <strong>durch</strong> (through) for means/cause.</p>
+              <div class="example-box">
+                <p>Das Haus wird <strong>von</strong> einer Firma renoviert.</p>
+                <p>Viele Probleme werden <strong>durch</strong> Stress verursacht.</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="subsection">
+            <h4>5) Konjunktiv II for Politeness & Hypotheses <span class="tag b1">B1</span></h4>
+            <p>
+              Used for politeness, wishes, and unreal situations. Often formed with <strong>würde + infinitive</strong>.
+            </p>
+            <div class="example-box">
+              <p><strong>Polite:</strong> Könnten Sie mir helfen?</p>
+              <p><strong>Wish:</strong> Ich <strong>würde</strong> gern mehr Zeit haben.</p>
+              <p><strong>Unreal:</strong> Wenn ich Geld hätte, <strong>würde</strong> ich reisen.</p>
+            </div>
+
+            <details>
+              <summary>Common “true” Konjunktiv II forms</summary>
+              <div class="example-box">
+                <p>sein → ich <strong>wäre</strong>, haben → ich <strong>hätte</strong></p>
+                <p>können → ich <strong>könnte</strong>, müssen → ich <strong>müsste</strong></p>
+              </div>
+            </details>
+          </div>
+
+          <div class="subsection">
+            <h4>6) Infinitive Clauses: <em>zu</em> <span class="tag b1">B1</span></h4>
+            <p>
+              Use <strong>zu + infinitive</strong> when the subject is the same or understood.
+            </p>
+            <div class="example-box">
+              <p>Ich versuche, früh <strong>zu schlafen</strong>.</p>
+              <p>Es ist wichtig, genug Wasser <strong>zu trinken</strong>.</p>
+            </div>
+
+            <details>
+              <summary>Where does “zu” go with prefixes?</summary>
+              <div class="example-box">
+                <p><strong>Separable:</strong> anzufangen, aufzustehen, mitzukommen</p>
+                <p><strong>Inseparable:</strong> zu besuchen (no split), zu verstehen</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="subsection">
+            <h4>7) Connectors (Konjunktionen) <span class="tag b1">B1</span></h4>
+            <p>
+              Coordinating connectors keep word order: <em>und, oder, aber, denn</em>.
+              Subordinating connectors push the verb to the end: <em>weil, dass, obwohl, wenn</em>.
+            </p>
+            <div class="example-box">
+              <p>Ich bleibe, <strong>denn</strong> ich bin müde. (V2 after denn)</p>
+              <p>Ich bleibe, <strong>weil</strong> ich müde <strong>bin</strong>. (verb-final)</p>
             </div>
           </div>
         </section>
 
-        <!-- Verbs with Prepositions -->
-        <section id="prepositions" class="grammar-section">
-          <h3>4. Verbs with Prepositions (Verben mit Präpositionen)</h3>
-          <p>Many German verbs require specific prepositions. These must be memorized as fixed combinations.</p>
-          
+        <!-- ====================== B2 ====================== -->
+        <section id="b2" class="grammar-section">
+          <h3><span class="tag b2">B2</span> Upper-Intermediate</h3>
+          <p>Nuance, advanced word order, passive variations, reported speech basics, and precise clause linking.</p>
+
           <div class="subsection">
-            <h4>Common Combinations</h4>
+            <h4>1) Verb Brackets (Satzklammer) & Midfield Order <span class="tag b2">B2</span></h4>
+            <p>
+              German often forms a “bracket”: the conjugated verb (or auxiliary) early, and the rest of the verb late.
+              Elements in the middle (Mittelfeld) have tendencies:
+              <strong>TEKAMOLO</strong> (Time–Cause–Manner–Place) is a helpful guideline, not an absolute law.
+            </p>
+            <div class="example-box">
+              <p>Ich <strong>habe</strong> gestern wegen der Arbeit schnell <strong>nach Hause gefahren</strong>.</p>
+              <p><code>aux</code> + [time] [cause] [manner] [place] + <code>past participle</code></p>
+            </div>
+
+            <details>
+              <summary>Pronoun order (common tendency)</summary>
+              <p>Pronouns tend to come earlier than full nouns. Dative pronoun often before accusative noun.</p>
+              <div class="example-box">
+                <p>Ich gebe <strong>ihm</strong> das Buch.</p>
+                <p>Ich gebe das Buch <strong>dem Mann</strong>.</p>
+                <p>Ich gebe <strong>es</strong> <strong>ihm</strong>. / Ich gebe <strong>ihm</strong> <strong>es</strong>. (both possible; focus differs)</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="subsection">
+            <h4>2) Zustandspassiv (State Passive) <span class="tag b2">B2</span></h4>
+            <p>
+              Distinguish action vs resulting state:
+              <strong>werden + Partizip II</strong> (action) vs <strong>sein + Partizip II</strong> (state).
+            </p>
+            <div class="example-box">
+              <p><strong>Vorgangspassiv:</strong> Die Tür <strong>wird</strong> geöffnet. (someone is opening it)</p>
+              <p><strong>Zustandspassiv:</strong> Die Tür <strong>ist</strong> geöffnet. (it is open)</p>
+            </div>
+          </div>
+
+          <div class="subsection">
+            <h4>3) Konjunktiv I (Reported Speech) <span class="tag b2">B2</span></h4>
+            <p>
+              Used in news/reporting to distance the speaker from the statement.
+              If Konjunktiv I forms are ambiguous, German often switches to Konjunktiv II or uses reporting verbs + dass.
+            </p>
+            <div class="example-box">
+              <p>Er sagt, er <strong>sei</strong> krank.</p>
+              <p>Sie behauptet, sie <strong>habe</strong> nichts gesehen.</p>
+              <p>Der Sprecher erklärte, die Lage <strong>werde</strong> sich verbessern.</p>
+            </div>
+
+            <details>
+              <summary>Alternative strategies</summary>
+              <div class="example-box">
+                <p>Er sagte, dass er krank <strong>ist</strong>. (neutral/less “journalistic”)</p>
+                <p>Er sagte, er <strong>wäre</strong> krank. (Konjunktiv II distancing)</p>
+              </div>
+            </details>
+          </div>
+
+          <div class="subsection">
+            <h4>4) Advanced Subordinators & Sentence Linking <span class="tag b2">B2</span></h4>
+            <p>
+              Use precise connectors to show logic: contrast, concession, cause, purpose, condition.
+            </p>
             <div class="prep-grid">
               <div class="prep-card">
-                <h5>an (+ Akk/Dat)</h5>
+                <h5>Concession</h5>
                 <ul>
-                  <li>denken an → to think of</li>
-                  <li>sich erinnern an → to remember</li>
-                  <li>teilnehmen an → to participate in</li>
-                  <li>arbeiten an → to work on</li>
+                  <li><strong>obwohl</strong> … (although)</li>
+                  <li><strong>trotzdem</strong> (nevertheless, main-clause adverb)</li>
                 </ul>
               </div>
-              
               <div class="prep-card">
-                <h5>auf (+ Akk)</h5>
+                <h5>Cause / Result</h5>
                 <ul>
-                  <li>warten auf → to wait for</li>
-                  <li>sich freuen auf → to look forward to</li>
-                  <li>sich vorbereiten auf → to prepare for</li>
-                  <li>achten auf → to pay attention to</li>
+                  <li><strong>da</strong> … (since; often more formal than weil)</li>
+                  <li><strong>deshalb/deswegen</strong> (therefore; V2 after)</li>
                 </ul>
               </div>
-              
               <div class="prep-card">
-                <h5>für (+ Akk)</h5>
+                <h5>Purpose</h5>
                 <ul>
-                  <li>sich interessieren für → to be interested in</li>
-                  <li>sich entscheiden für → to decide on</li>
-                  <li>danken für → to thank for</li>
-                  <li>sich einsetzen für → to advocate for</li>
+                  <li><strong>damit</strong> … (so that; different subject possible)</li>
+                  <li><strong>um … zu</strong> (in order to; same subject)</li>
                 </ul>
               </div>
-              
               <div class="prep-card">
-                <h5>mit (+ Dat)</h5>
+                <h5>Condition</h5>
                 <ul>
-                  <li>sprechen mit → to speak with</li>
-                  <li>sich beschäftigen mit → to deal with</li>
-                  <li>beginnen mit → to begin with</li>
-                  <li>umgehen mit → to handle</li>
-                </ul>
-              </div>
-              
-              <div class="prep-card">
-                <h5>über (+ Akk)</h5>
-                <ul>
-                  <li>sprechen über → to talk about</li>
-                  <li>sich freuen über → to be happy about</li>
-                  <li>nachdenken über → to think about</li>
-                  <li>sich beschweren über → to complain about</li>
-                </ul>
-              </div>
-              
-              <div class="prep-card">
-                <h5>von (+ Dat)</h5>
-                <ul>
-                  <li>abhängen von → to depend on</li>
-                  <li>erzählen von → to tell about</li>
-                  <li>träumen von → to dream of</li>
-                  <li>sich verabschieden von → to say goodbye to</li>
+                  <li><strong>falls</strong> … (in case)</li>
+                  <li><strong>sofern</strong> … (provided that; formal)</li>
                 </ul>
               </div>
             </div>
-          </div>
 
-          <div class="tip-box">
-            <strong>💡 Tip:</strong> When the object is a clause, use "da-" compounds: Ich denke <strong>daran</strong>, dass... (I'm thinking about the fact that...)
-          </div>
-        </section>
-
-        <!-- Word Order -->
-        <section id="word-order" class="grammar-section">
-          <h3>5. Word Order (Wortstellung)</h3>
-          
-          <div class="subsection">
-            <h4>Main Clause</h4>
-            <p>The verb is always in the <strong>second position</strong>.</p>
             <div class="example-box">
-              <p>Ich <strong>gehe</strong> heute ins Kino.</p>
-              <p>Heute <strong>gehe</strong> ich ins Kino.</p>
-              <p>Ins Kino <strong>gehe</strong> ich heute.</p>
-            </div>
-          </div>
-
-          <div class="subsection">
-            <h4>With Modal Verbs</h4>
-            <p>Modal verb in second position, main verb at the end in infinitive.</p>
-            <div class="example-box">
-              <p>Ich <strong>muss</strong> heute <strong>arbeiten</strong>.</p>
-              <p>Sie <strong>kann</strong> gut Deutsch <strong>sprechen</strong>.</p>
-            </div>
-          </div>
-
-          <div class="subsection">
-            <h4>Subordinate Clause</h4>
-            <p>Conjugated verb moves to the <strong>end</strong>.</p>
-            <div class="example-box">
-              <p>Ich weiß, <strong>dass</strong> er heute <strong>kommt</strong>.</p>
-              <p>Sie sagt, <strong>dass</strong> sie Deutsch <strong>lernt</strong>.</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Modal Verbs -->
-        <section id="modal-verbs" class="grammar-section">
-          <h3>6. Modal Verbs (Modalverben)</h3>
-          <p>Modal verbs express ability, permission, necessity, or desire. They're followed by an infinitive verb at the end of the sentence.</p>
-          
-          <div class="subsection">
-            <h4>The Six Modal Verbs</h4>
-            <table class="grammar-table">
-              <tr>
-                <th>Modal Verb</th>
-                <th>Meaning</th>
-                <th>Example</th>
-              </tr>
-              <tr>
-                <td><strong>können</strong></td>
-                <td>can, to be able to</td>
-                <td>Ich kann schwimmen. (I can swim.)</td>
-              </tr>
-              <tr>
-                <td><strong>müssen</strong></td>
-                <td>must, to have to</td>
-                <td>Ich muss arbeiten. (I must work.)</td>
-              </tr>
-              <tr>
-                <td><strong>dürfen</strong></td>
-                <td>may, to be allowed to</td>
-                <td>Du darfst gehen. (You may go.)</td>
-              </tr>
-              <tr>
-                <td><strong>sollen</strong></td>
-                <td>should, to be supposed to</td>
-                <td>Ich soll lernen. (I should study.)</td>
-              </tr>
-              <tr>
-                <td><strong>wollen</strong></td>
-                <td>want to</td>
-                <td>Ich will gehen. (I want to go.)</td>
-              </tr>
-              <tr>
-                <td><strong>mögen/möchten</strong></td>
-                <td>to like / would like to</td>
-                <td>Ich möchte Kaffee. (I would like coffee.)</td>
-              </tr>
-            </table>
-          </div>
-        </section>
-
-        <!-- Quick Reference -->
-        <section class="grammar-section quick-reference">
-          <h3>Quick Reference Card</h3>
-          <div class="reference-grid">
-            <div class="reference-card">
-              <h4>🎯 Remember</h4>
-              <ul>
-                <li>Verb always in 2nd position (main clause)</li>
-                <li>Separable prefixes go to the end</li>
-                <li>Reflexive pronouns come right after verb</li>
-                <li>Past participle goes to the end</li>
-              </ul>
-            </div>
-            
-            <div class="reference-card">
-              <h4>📚 Study Tips</h4>
-              <ul>
-                <li>Learn verbs with their prepositions</li>
-                <li>Practice separable verbs in context</li>
-                <li>Memorize irregular past forms</li>
-                <li>Use flashcards for verb conjugations</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-      </div>
-    </div>
-  </main>
-
-  <footer class="main-footer">
-    <div class="container">
-      <p>&copy; 2026 German Verbs Learning App | Built with ❤️ for language learners</p>
-      <div class="footer-links">
-        <a href="#" onclick="alert('Created to help learners master German verbs!'); return false;">About</a>
-        <a href="#" onclick="alert('Contact: support@germanverbs.app'); return false;">Contact</a>
-      </div>
-    </div>
-  </footer>
-</body>
-</html>
+              <p><strong>Obwohl</strong> es spät <strong>war</strong>, sind wir geblieben.</p>
+              <p>Es war spät; <strong>trotzdem</strong> <strong>sind</strong> wir geblieben.</p>
+              <p>Ich lerne, <strong>damit</strong> ich die Prüfung <strong>bestehe</strong>.</p>
