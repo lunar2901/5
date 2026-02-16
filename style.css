@@ -1507,3 +1507,92 @@ body.zen-mode .word-card-host {
   gap: var(--spacing-md);
   flex-wrap: wrap;
 }
+
+/* ===== Minimal icon header + drawer ===== */
+
+.header-content{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.icon-btn{
+  appearance:none;
+  border:0;
+  background:transparent;
+  padding:8px;
+  border-radius:999px;
+  line-height:0;
+  color:#111;
+}
+
+.icon-btn:active{ transform: scale(0.98); }
+
+.logo h1{
+  font-size:16px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin:0;
+}
+
+/* Hide the old text nav completely if it still exists somewhere */
+.main-nav{ display:none !important; }
+
+/* Drawer */
+.drawer-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  z-index:100;
+}
+
+.drawer{
+  position:fixed;
+  top:0;
+  right:0;
+  height:100%;
+  width:min(86vw, 360px);
+  background:#fff;
+  z-index:101;
+  border-left:1px solid #e8e8e8;
+  padding:18px 16px;
+}
+
+.drawer-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding-bottom:12px;
+  border-bottom:1px solid #e8e8e8;
+}
+
+.drawer-title{
+  font-size:14px;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  font-weight:600;
+}
+
+.drawer-nav{
+  display:flex;
+  flex-direction:column;
+  padding-top:14px;
+}
+
+.drawer-link{
+  padding:14px 0;
+  border-bottom:1px solid #f0f0f0;
+  text-decoration:none;
+  color:#111;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-size:13px;
+}
+
