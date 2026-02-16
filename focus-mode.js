@@ -93,20 +93,6 @@ export function initFocusMode({
     jumpTo(prevIdx === index ? Math.max(index - 1, 0) : prevIdx);
   }
 
-  function markLearnedAndNext() {
-    learnedSet.add(getId(items[index], index));
-    save();
-    // auto go to next unlearned
-    const nextIdx = findNextUnlearned(index);
-    jumpTo(nextIdx);
-  }
-
-  function markUnlearned() {
-    learnedSet.delete(getId(items[index], index));
-    save();
-    render();
-  }
-
   function toggleHide() {
     hideWords = !hideWords;
     if (hideWords) openPanel = "";
@@ -158,6 +144,14 @@ export function initFocusMode({
 
     const currentItem = items[index];
     const currentLearned = isLearned(currentItem, index);
+    
+    // ✅ Auto-learn: mark as learned when shown
+    const currentId = getId(currentItem, index);
+    if (!learnedSet.has(currentId)) {
+      learnedSet.add(currentId);
+      save();
+    }
+
 
     root.innerHTML = `
       <button type="button" class="zen-fab" data-action="zen" aria-label="${zen ? 'Show menus' : 'Hide menus'}">
@@ -230,8 +224,6 @@ export function initFocusMode({
         if (a === "unlearned") togglePanel("unlearned");
         if (a === "prev") prev();
         if (a === "next") next();
-        if (a === "learnNext") markLearnedAndNext();
-        if (a === "unlearn") markUnlearned();
         if (a === "zen") toggleZen();
       });
     });
@@ -241,9 +233,6 @@ export function initFocusMode({
       if (e.key === "ArrowLeft") prev();
       if (e.key === "ArrowRight") next();
       if (e.key.toLowerCase() === 'm') toggleZen();
-      if (e.key.toLowerCase() === "l") {
-        if (isLearned(items[index], index)) markUnlearned();
-        else markLearnedAndNext();
       }
     };
 
