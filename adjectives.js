@@ -1,13 +1,17 @@
 // adjectives.js - Focus mode (1 adjective at a time + accordion lists)
 import adjectivesA1 from './js/adjectives-db-a1.js';
+import adjectivesA2 from './js/adjectives-db-a2.js';
+import adjectivesB1 from './js/adjectives-db-b1.js';
+import adjectivesB2 from './js/adjectives-db-b2.js';
+import adjectivesC1 from './js/adjectives-db-c1.js';
 import { initFocusMode } from './focus-mode.js';
 
 const adjectivesDB = {
   a1: adjectivesA1,
-  a2: [],
-  b1: [],
-  b2: [],
-  c1: []
+  a2: adjectivesA2,
+  b1: adjectivesB1,
+  b2: adjectivesB2,
+  c1: adjectivesC1,
 };
 
 const levelBtns = document.querySelectorAll('.level-btn');
