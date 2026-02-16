@@ -1336,3 +1336,9 @@ body {
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
+
+.word-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
