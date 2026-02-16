@@ -1286,5 +1286,27 @@
       render();
     })();
   </script>
+  <script>
+  const menuBtn = document.querySelector(".menu-btn");
+  const drawer = document.querySelector(".drawer");
+  const backdrop = document.querySelector(".drawer-backdrop");
+  const closeBtn = document.querySelector(".drawer-close");
+
+  function openMenu(){
+    drawer.hidden = false;
+    backdrop.hidden = false;
+    menuBtn.setAttribute("aria-expanded", "true");
+  }
+  function closeMenu(){
+    drawer.hidden = true;
+    backdrop.hidden = true;
+    menuBtn.setAttribute("aria-expanded", "false");
+  }
+
+  menuBtn?.addEventListener("click", openMenu);
+  closeBtn?.addEventListener("click", closeMenu);
+  backdrop?.addEventListener("click", closeMenu);
+</script>
+
 </body>
 </html>
