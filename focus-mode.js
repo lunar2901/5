@@ -139,18 +139,20 @@ export function initFocusMode({
 
     applyZen();
 
-    const learnedCount = items.reduce((acc, it, i) => acc + (isLearned(it, i) ? 1 : 0), 0);
-    const unlearnedCount = items.length - learnedCount;
-
     const currentItem = items[index];
-    const currentLearned = isLearned(currentItem, index);
     
-    // ✅ Auto-learn: mark as learned when shown
+    // ✅ Auto-learn first
     const currentId = getId(currentItem, index);
     if (!learnedSet.has(currentId)) {
       learnedSet.add(currentId);
       save();
     }
+    
+    // ✅ Now calculate counts
+    const learnedCount = items.reduce((acc, it, i) => acc + (isLearned(it, i) ? 1 : 0), 0);
+    const unlearnedCount = items.length - learnedCount;
+
+
 
 
     root.innerHTML = `
@@ -233,7 +235,6 @@ export function initFocusMode({
       if (e.key === "ArrowLeft") prev();
       if (e.key === "ArrowRight") next();
       if (e.key.toLowerCase() === 'm') toggleZen();
-      }
     };
 
     // Swipe navigation on touch devices (works even when menus are hidden)
