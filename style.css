@@ -1209,9 +1209,7 @@ body {
 }
 
 /* If you render inside #verbs-list (index page), force single-column */
-.verbs-list.study-root {
-  grid-template-columns: 1fr !important;
-}
+.verbs-list.study-root { grid-template-columns: 1fr !important; }
 
 /* --- Vocabulary List panel (top) --- */
 .focus-list-card {
