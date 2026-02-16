@@ -252,7 +252,6 @@ export function initFocusMode({
     };
 
     // Swipe navigation on touch devices (works even when menus are hidden)
-    const cardHost = root.querySelector('#focus-card-host');
     if (cardHost) {
       let x0 = null;
       let y0 = null;
