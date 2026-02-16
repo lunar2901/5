@@ -1,128 +1,104 @@
-// adverbs.js - Study mode (1 adverb at a time)
-import adverbsA1 from './js/adverbs-db-a1.js';
-import { initStudyMode } from './study-mode.js';
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>German Adverbs</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-const adverbsDB = {
-  a1: adverbsA1,
-  a2: [],
-  b1: [],
-  b2: [],
-  c1: []
-};
-
-const levelBtns = document.querySelectorAll('.level-btn');
-const searchInput = document.getElementById('search-input');
-const adverbCount = document.getElementById('adverb-count');
-const clearSearchBtn = document.getElementById('clear-search');
-
-let currentLevel = 'a1';
-
-renderCurrent();
-updateCounts();
-
-levelBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    levelBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    currentLevel = btn.dataset.level;
-    searchInput.value = '';
-    clearSearchBtn.style.display = 'none';
-    renderCurrent();
-  });
-});
-
-searchInput.addEventListener('input', (e) => {
-  const query = e.target.value.trim().toLowerCase();
-  clearSearchBtn.style.display = query ? 'block' : 'none';
-  renderCurrent(query);
-});
-
-clearSearchBtn.addEventListener('click', () => {
-  searchInput.value = '';
-  searchInput.dispatchEvent(new Event('input'));
-  searchInput.focus();
-});
-
-function filterAdverbs(level, query) {
-  const list = adverbsDB[level] || [];
-  if (!query) return list;
-
-  return list.filter(adv => {
-    const searchText = [
-      adv.word,
-      adv.category,
-      ...(adv.translations || []),
-      ...(adv.examples || [])
-    ].filter(Boolean).join(' ').toLowerCase();
-
-    return searchText.includes(query);
-  });
-}
-
-function renderCurrent(query = '') {
-  const root = document.getElementById('study-root');
-  if (!root) {
-    console.error('Missing #study-root in adverbs.html');
-    return;
-  }
-
-  const list = filterAdverbs(currentLevel, query);
-
-  adverbCount.textContent = `${list.length} ${list.length === 1 ? 'adverb' : 'adverbs'}`;
-
-  if (list.length === 0) {
-    root.innerHTML = `
-      <div class="no-results">
-        <p>No adverbs found${query ? ` matching "${escapeHtml(query)}"` : ' in this level'}</p>
+  <!-- Header / Nav (keep same as other pages) -->
+  <header class="main-header">
+    <div class="container header-content">
+      <div class="logo">
+        <h1>German Learning</h1>
       </div>
-    `;
-    return;
-  }
 
-  initStudyMode({
-    rootId: 'study-root',
-    items: list,
-    level: currentLevel,
-    storageKey: 'adverbs',
+      <nav class="main-nav">
+        <a class="nav-link" href="index.html">Verbs</a>
+        <a class="nav-link" href="nouns.html">Nouns</a>
+        <a class="nav-link" href="adjectives.html">Adjectives</a>
+        <a class="nav-link active" href="adverbs.html">Adverbs</a>
+        <a class="nav-link" href="grammar.html">Grammar</a>
+      </nav>
+    </div>
+  </header>
 
-    getId: (item) => item.word,
-    getFront: (item) => item.word || '—',
-    getBack: (item) => (item.translations || []).join(', '),
-    getExtra: (item) => formatAdverbExtra(item)
-  });
-}
+  <main class="main-content">
+    <div class="container">
 
-function formatAdverbExtra(adv) {
-  const cat = adv.category ? `Category: ${adv.category}` : '';
-  const examples = (adv.examples || []).slice(0, 2);
-  const exText = examples.length ? `Examples: ${examples.join(' | ')}` : '';
-  return [cat, exText].filter(Boolean).join('\n');
-}
+      <!-- Optional hero like your other pages -->
+      <section class="hero">
+        <h2>Adverbs</h2>
+        <p>Study one adverb at a time.</p>
+      </section>
 
-function updateCounts() {
-  Object.keys(adverbsDB).forEach(level => {
-    const badge = document.getElementById(`count-${level}`);
-    if (badge) badge.textContent = (adverbsDB[level] || []).length;
-  });
-}
+      <!-- Level buttons -->
+      <section class="level-section">
+        <h3>Select Level</h3>
+        <div class="level-buttons">
+          <button class="level-btn active" data-level="a1">
+            <span class="level-badge">A1</span>
+            <span class="level-name">Beginner</span>
+            <span class="level-count" id="count-a1">0</span>
+          </button>
 
-document.addEventListener('keydown', (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-    e.preventDefault();
-    searchInput.focus();
-  }
-  if (e.key === 'Escape' && searchInput.value) {
-    searchInput.value = '';
-    searchInput.dispatchEvent(new Event('input'));
-  }
-});
+          <button class="level-btn" data-level="a2">
+            <span class="level-badge">A2</span>
+            <span class="level-name">Elementary</span>
+            <span class="level-count" id="count-a2">0</span>
+          </button>
 
-function escapeHtml(s) {
-  return String(s ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
-}
+          <button class="level-btn" data-level="b1">
+            <span class="level-badge">B1</span>
+            <span class="level-name">Intermediate</span>
+            <span class="level-count" id="count-b1">0</span>
+          </button>
+
+          <button class="level-btn" data-level="b2">
+            <span class="level-badge">B2</span>
+            <span class="level-name">Upper</span>
+            <span class="level-count" id="count-b2">0</span>
+          </button>
+
+          <button class="level-btn" data-level="c1">
+            <span class="level-badge">C1</span>
+            <span class="level-name">Advanced</span>
+            <span class="level-count" id="count-c1">0</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Search -->
+      <section class="search-section">
+        <div class="search-container">
+          <span class="search-icon">🔎</span>
+          <input id="search-input" class="search-input" type="text" placeholder="Search adverbs..." />
+          <button id="clear-search" class="clear-search" style="display:none;" type="button">✕</button>
+        </div>
+
+        <div class="verb-count-container">
+          <span id="adverb-count" class="verb-count">0 adverbs</span>
+        </div>
+      </section>
+
+      <!-- Main area -->
+      <section class="verbs-section">
+        <!-- IMPORTANT: focus mode renders inside here -->
+        <div id="study-root" class="study-root"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div class="container">
+      <p>© German Learning</p>
+    </div>
+  </footer>
+
+  <!-- Page script -->
+  <script type="module" src="adverbs.js"></script>
+</body>
+</html>
