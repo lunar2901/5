@@ -1248,4 +1248,387 @@ window.TOPICS = [
       </div>
     `
   }
+    // --------------------------
+  // B1/B2 — NOUNS: PLURALS + N-DECLENSION
+  // --------------------------
+  {
+    id: "plural-patterns",
+    level: "B1",
+    tags: ["Nouns","Plurals","Vocabulary"],
+    title: "Plural Patterns (how German plurals actually work)",
+    summary: "German plurals aren’t one-rule-fits-all. Learn common patterns + signals (umlaut, -e/-er/-n/-s) and store plurals with nouns.",
+    deep: `
+      <div class="box">
+        <p><strong>Reality check:</strong> plurals must often be learned per noun, but patterns help you guess correctly.</p>
+        <p><strong>High-frequency patterns:</strong></p>
+        <ul>
+          <li><strong>-e</strong> (often masc/neut): der Tag → die Tag<strong>e</strong></li>
+          <li><strong>-e + umlaut</strong> (often): der Stuhl → die St<strong>ü</strong>hl<strong>e</strong></li>
+          <li><strong>-er (+ umlaut)</strong> (often neut): das Kind → die Kind<strong>er</strong>, das Buch → die B<strong>ü</strong>ch<strong>er</strong></li>
+          <li><strong>-n / -en</strong> (very common; many feminine): die Zeitung → die Zeitung<strong>en</strong></li>
+          <li><strong>-s</strong> (loanwords/abbreviations): das Auto → die Auto<strong>s</strong>, das Handy → die Handy<strong>s</strong></li>
+          <li><strong>no ending</strong> (some; often with umlaut): der Lehrer → die Lehrer</li>
+        </ul>
+        <div class="divider"></div>
+        <p><strong>Study tactic:</strong> learn nouns as a “bundle”: <em>der Tisch, -e</em> / <em>die Frau, -en</em> / <em>das Buch, ü-er</em>.</p>
+      </div>
+    `,
+    examples: `
+      <div class="box">
+        <p>die Frau → die Frau<strong>en</strong></p>
+        <p>das Buch → die B<strong>ü</strong>ch<strong>er</strong></p>
+        <p>der Student → die Student<strong>en</strong></p>
+        <p>das Auto → die Auto<strong>s</strong></p>
+      </div>
+    `,
+    mistakes: `
+      <div class="box">
+        <p><strong>Trap:</strong> assuming “-s like English”.</p>
+        <p><strong>Fix:</strong> reserve -s mainly for loanwords; otherwise expect -e/-en/-er/umlaut patterns.</p>
+      </div>
+    `,
+    practice: `
+      <div class="box">
+        <p>Add the plural:</p>
+        <ul>
+          <li>das Kind → die ____</li>
+          <li>die Stadt → die ____</li>
+          <li>der Stuhl → die ____</li>
+          <li>das Hotel → die ____</li>
+        </ul>
+      </div>
+    `
+  },
+
+  {
+    id: "n-declension",
+    level: "B2",
+    tags: ["Nouns","Cases","Writing"],
+    title: "N-Declension (weak masculine nouns)",
+    summary: "Some masculine nouns take -(e)n in all cases except nominative singular (der Student → des Studenten, dem Studenten, den Studenten).",
+    deep: `
+      <div class="box">
+        <p><strong>Core rule:</strong> Weak masculine nouns add <strong>-(e)n</strong> in Akk/Dat/Gen singular (and usually in plural too).</p>
+        <p><strong>Typical groups:</strong></p>
+        <ul>
+          <li>People/roles: der Student, der Kollege, der Junge, der Kunde, der Mensch</li>
+          <li>Animals: der Hase, der Löwe</li>
+          <li>Some -e nouns: der Name (special), der Gedanke (often)</li>
+        </ul>
+        <div class="divider"></div>
+        <p><strong>Special:</strong> der Name → des Namens / dem Namen / den Namen (Gen has -ns).</p>
+      </div>
+    `,
+    examples: `
+      <div class="box">
+        <p>NOM: der Student</p>
+        <p>AKK: Ich sehe den Student<strong>en</strong>.</p>
+        <p>DAT: Ich helfe dem Student<strong>en</strong>.</p>
+        <p>GEN: Das ist das Buch des Student<strong>en</strong>.</p>
+        <p>Special: der Name → der Name / den Namen / dem Namen / des Namens</p>
+      </div>
+    `,
+    mistakes: `
+      <div class="box">
+        <p><strong>Common:</strong> *Ich sehe den Student.</p>
+        <p><strong>Right:</strong> Ich sehe den Student<strong>en</strong>.</p>
+      </div>
+    `,
+    practice: `
+      <div class="box">
+        <p>Add the correct form:</p>
+        <ul>
+          <li>Ich kenne den ____ (Kollege).</li>
+          <li>Das ist der Hund des ____ (Junge).</li>
+          <li>Ich helfe dem ____ (Student).</li>
+        </ul>
+      </div>
+    `
+  },
+
+  // --------------------------
+  // B1/B2 — VERB + PREPOSITION (FIXED COMBINATIONS)
+  // --------------------------
+  {
+    id: "verb-prep-combos",
+    level: "B1",
+    tags: ["Prepositions","Verbs","Cases"],
+    title: "Verb + Preposition (fixed combinations you must learn)",
+    summary: "Many verbs require a specific preposition + case (warten auf + Akk, teilnehmen an + Dat). Treat them as one vocabulary unit.",
+    deep: `
+      <div class="box">
+        <p><strong>Rule:</strong> The preposition is part of the verb’s “frame.” Don’t translate word-by-word.</p>
+        <p><strong>High-frequency sets:</strong></p>
+        <ul>
+          <li><strong>warten auf</strong> (+ Akk)</li>
+          <li><strong>sich freuen auf</strong> (+ Akk) vs <strong>sich freuen über</strong> (+ Akk)</li>
+          <li><strong>teilnehmen an</strong> (+ Dat)</li>
+          <li><strong>sprechen mit</strong> (+ Dat) / <strong>sprechen über</strong> (+ Akk)</li>
+          <li><strong>denken an</strong> (+ Akk)</li>
+          <li><strong>sich interessieren für</strong> (+ Akk)</li>
+          <li><strong>abhängen von</strong> (+ Dat)</li>
+        </ul>
+        <div class="divider"></div>
+        <p><strong>Clause objects:</strong> use da-/wo- compounds:</p>
+        <p class="muted">Ich freue mich <strong>darauf</strong>, dass… / Woran denkst du?</p>
+      </div>
+    `,
+    examples: `
+      <div class="box">
+        <p>Ich warte <strong>auf den</strong> Bus.</p>
+        <p>Wir nehmen <strong>an der</strong> Sitzung teil.</p>
+        <p>Ich freue mich <strong>auf den</strong> Urlaub. (looking forward)</p>
+        <p>Ich freue mich <strong>über das</strong> Geschenk. (happy about)</p>
+      </div>
+    `,
+    mistakes: `
+      <div class="box">
+        <p><strong>Trap:</strong> wrong case after the preposition.</p>
+        <p><strong>Fix:</strong> learn it as “warten auf + Akk”, not just “warten auf”.</p>
+      </div>
+    `,
+    practice: `
+      <div class="box">
+        <p>Choose the correct preposition + case:</p>
+        <ul>
+          <li>Ich interessiere mich ____ Kunst. (für + Akk)</li>
+          <li>Wir nehmen ____ Kurs teil. (an + Dat)</li>
+          <li>Das hängt ____ Wetter ab. (von + Dat)</li>
+        </ul>
+      </div>
+    `
+  },
+
+  // --------------------------
+  // B2/C1 — MITTELFELD ORDER + TEKAMOLO + PRONOUNS
+  // --------------------------
+  {
+    id: "mittelfeld-tekamolo",
+    level: "B2",
+    tags: ["Word order","Style","Clauses"],
+    title: "Mittelfeld Word Order: TEKAMOLO + pronoun ordering",
+    summary: "In the “middle field” (between finite verb and verb ending), German prefers a default order: Time–Cause–Manner–Place (TEKAMOLO) and pronouns early.",
+    deep: `
+      <div class="box">
+        <p><strong>Sentence zones (simplified):</strong></p>
+        <ul>
+          <li><strong>Left bracket:</strong> finite verb (V2)</li>
+          <li><strong>Mittelfeld:</strong> subjects/objects/adverbs</li>
+          <li><strong>Right bracket:</strong> infinitives/participles/separable prefix</li>
+        </ul>
+        <div class="divider"></div>
+        <p><strong>TEKAMOLO (common default):</strong> <strong>Te</strong>mporal → <strong>Ka</strong>usal → <strong>Mo</strong>dal (manner) → <strong>Lo</strong>kal</p>
+        <p class="muted">Ich arbeite <strong>heute</strong> <strong>wegen der Prüfung</strong> <strong>konzentriert</strong> <strong>zu Hause</strong>.</p>
+        <div class="divider"></div>
+        <p><strong>Pronoun tendency:</strong> pronouns usually come before full noun objects.</p>
+        <p class="muted">Ich gebe <strong>es</strong> dem Mann. / Ich gebe dem Mann <strong>das Buch</strong>.</p>
+        <p><strong>When you break it:</strong> emphasis/focus, contrast, rhythm. (Advanced writing uses this deliberately.)</p>
+      </div>
+    `,
+    examples: `
+      <div class="box">
+        <p>Ich habe <strong>heute</strong> <strong>mit großer Freude</strong> <strong>in Berlin</strong> gearbeitet.</p>
+        <p>Ich gebe <strong>ihm</strong> das Buch. (pronoun first)</p>
+        <p>Ich gebe <strong>es</strong> dem Lehrer. (Akk pronoun before Dat noun)</p>
+      </div>
+    `,
+    mistakes: `
+      <div class="box">
+        <p><strong>Common:</strong> random adverb order.</p>
+        <p><strong>Fix:</strong> default to TEKAMOLO, then deviate only for emphasis.</p>
+      </div>
+    `,
+    practice: `
+      <div class="box">
+        <p>Put in natural order (TEKAMOLO):</p>
+        <ul>
+          <li>Ich lerne (in der Bibliothek) (heute) (konzentriert).</li>
+          <li>Wir treffen uns (wegen des Projekts) (morgen) (im Büro).</li>
+        </ul>
+      </div>
+    `
+  },
+
+  // --------------------------
+  // B2/C1 — PASSIVE PERFECT/PLUPERFECT + ALTERNATIVES
+  // --------------------------
+  {
+    id: "passive-perfect-forms",
+    level: "C1",
+    tags: ["Voice","Tenses","Writing"],
+    title: "Passive in Perfekt/Plusquamperfekt + alternatives (man / sich lassen)",
+    summary: "Advanced passive forms appear often in reports. Also learn alternatives: man-constructions and 'sich lassen + Infinitiv'.",
+    deep: `
+      <div class="box">
+        <p><strong>Action passive (werden) recap:</strong> wird gemacht.</p>
+        <p><strong>Perfekt passive:</strong> ist gemacht <strong>worden</strong> (NOT: ist gemacht).</p>
+        <p><strong>Plusquamperfekt passive:</strong> war gemacht <strong>worden</strong>.</p>
+        <div class="divider"></div>
+        <p><strong>Alternatives (often better style):</strong></p>
+        <ul>
+          <li><strong>man</strong>: Man hat die Daten ausgewertet. (clear, active-ish)</li>
+          <li><strong>sich lassen</strong>: Das lässt sich leicht erklären. (can be explained)</li>
+          <li><strong>sein + adjective</strong>: Die Tür ist offen. (state)</li>
+        </ul>
+      </div>
+    `,
+    examples: `
+      <div class="box">
+        <p>Der Vertrag <strong>ist</strong> gestern unterschrieben <strong>worden</strong>.</p>
+        <p>Der Vertrag <strong>war</strong> bereits unterschrieben <strong>worden</strong>, als wir ankamen.</p>
+        <p><strong>Man</strong> hat die Daten ausgewertet.</p>
+        <p>Das <strong>lässt sich</strong> leicht erklären.</p>
+      </div>
+    `,
+    mistakes: `
+      <div class="box">
+        <p><strong>Trap:</strong> confusing state passive with Perfekt passive.</p>
+        <p><strong>State:</strong> Die Tür ist geöffnet. (open)</p>
+        <p><strong>Perfekt action passive:</strong> Die Tür ist geöffnet <strong>worden</strong>. (was opened)</p>
+      </div>
+    `,
+    practice: `
+      <div class="box">
+        <p>Rewrite using a passive alternative:</p>
+        <ul>
+          <li>Die Firma repariert das Gerät. → (man / sich lassen / passive)</li>
+          <li>Jemand kann das Problem leicht lösen. → (sich lassen)</li>
+        </ul>
+      </div>
+    `
+  },
+
+  // --------------------------
+  // B2/C1 — PARTICIPLES + REDUCED RELATIVE CLAUSES
+  // --------------------------
+  {
+    id: "participle-adjectives",
+    level: "B2",
+    tags: ["Participles","Adjectives","Writing"],
+    title: "Participles as Adjectives (Partizip I vs II)",
+    summary: "Partizip I describes an active ongoing quality (lachend), Partizip II a completed/passive/resulting quality (geschlossen).",
+    deep: `
+      <div class="box">
+        <p><strong>Partizip I</strong> (present participle): verb + -d → <em>lachend, schlafend, wartend</em></p>
+        <p class="muted">Usually means “doing X” / ongoing: ein <strong>lachendes</strong> Kind (a child that is laughing).</p>
+        <div class="divider"></div>
+        <p><strong>Partizip II</strong> (past participle): often means result/passive: eine <strong>geschlossene</strong> Tür (a closed door).</p>
+        <p><strong>They behave like adjectives:</strong> adjective endings apply.</p>
+      </div>
+    `,
+    examples: `
+      <div class="box">
+        <p>ein <strong>wartender</strong> Kunde (waiting customer)</p>
+        <p>die <strong>geschriebene</strong> E-Mail (written email)</p>
+        <p>ein <strong>interessierendes</strong> Thema (interesting topic)</p>
+      </div>
+    `,
+    mistakes: `
+      <div class="box">
+        <p><strong>Trap:</strong> mixing meaning.</p>
+        <p><strong>Hint:</strong> Partizip I ≈ active/ongoing; Partizip II ≈ result/passive.</p>
+      </div>
+    `,
+    practice: `
+      <div class="box">
+        <p>Choose Partizip I or II:</p>
+        <ul>
+          <li>eine (öffnende/geöffnete) Tür (the door is being opened vs is open/was opened)</li>
+          <li>ein (lächelnder/gelächelter) Mann (only Partizip I makes sense here)</li>
+        </ul>
+      </div>
+    `
+  },
+
+  {
+    id: "reduced-relative-clauses",
+    level: "C1",
+    tags: ["Participles","Clauses","Writing"],
+    title: "Reduced Relative Clauses (participial constructions)",
+    summary: "German often shortens relative clauses into participle phrases in writing: 'die in Berlin lebenden Menschen' instead of 'die Menschen, die in Berlin leben'.",
+    deep: `
+      <div class="box">
+        <p><strong>Why it appears:</strong> academic/journalistic style prefers compact information packaging.</p>
+        <p><strong>Two common patterns:</strong></p>
+        <ul>
+          <li><strong>Partizip I</strong> for ongoing/action: die <strong>in Berlin lebenden</strong> Menschen</li>
+          <li><strong>Partizip II</strong> for completed/passive: die <strong>von Experten geprüften</strong> Daten</li>
+        </ul>
+        <div class="divider"></div>
+        <p><strong>Important:</strong> participle phrases still need adjective endings and can get long — use carefully for readability.</p>
+      </div>
+    `,
+    examples: `
+      <div class="box">
+        <p>Die Menschen, die in Berlin leben → die <strong>in Berlin lebenden</strong> Menschen</p>
+        <p>Die Daten, die von Experten geprüft wurden → die <strong>von Experten geprüften</strong> Daten</p>
+      </div>
+    `,
+    mistakes: `
+      <div class="box">
+        <p><strong>Trap:</strong> creating huge noun stacks.</p>
+        <p><strong>Fix:</strong> if the phrase becomes hard to parse, switch back to a normal relative clause.</p>
+      </div>
+    `,
+    practice: `
+      <div class="box">
+        <p>Rewrite shorter (participial):</p>
+        <ul>
+          <li>Die Studenten, die auf die Prüfung warten, …</li>
+          <li>Die Ergebnisse, die gestern veröffentlicht wurden, …</li>
+        </ul>
+      </div>
+    `
+  },
+
+  // --------------------------
+  // C1 — ADVANCED CONNECTORS
+  // --------------------------
+  {
+    id: "advanced-connectors",
+    level: "C1",
+    tags: ["Clauses","Style","Writing"],
+    title: "Advanced Connectors (wenngleich, alldieweil, insofern, zumal, sofern …)",
+    summary: "C1/C2 texts use connectors that express precise logic (concession, limitation, justification). Learn meaning + clause type (subordinate vs adverbial).",
+    deep: `
+      <div class="box">
+        <p><strong>Key idea:</strong> many advanced connectors introduce subordinate clauses → verb-final + comma.</p>
+        <p><strong>High-value connectors:</strong></p>
+        <ul>
+          <li><strong>wenngleich</strong> = although (formal concession)</li>
+          <li><strong>zumal</strong> = especially since (adds strong reason)</li>
+          <li><strong>sofern</strong> = provided that (condition)</li>
+          <li><strong>insofern (als …)</strong> = insofar as (scope/limitation)</li>
+          <li><strong>alldieweil</strong> = because/while (very formal/rare; recognize in reading)</li>
+        </ul>
+        <div class="divider"></div>
+        <p><strong>Register tip:</strong> Some are mostly written. Use them in writing after you can use the simpler ones correctly.</p>
+      </div>
+    `,
+    examples: `
+      <div class="box">
+        <p><strong>Wenngleich</strong> die Daten begrenzt <strong>sind</strong>, lassen sich Trends erkennen.</p>
+        <p>Wir sollten gehen, <strong>zumal</strong> es schon spät <strong>ist</strong>.</p>
+        <p><strong>Sofern</strong> du Zeit <strong>hast</strong>, können wir uns treffen.</p>
+        <p>Das ist richtig, <strong>insofern als</strong> die Annahmen plausibel <strong>sind</strong>.</p>
+      </div>
+    `,
+    mistakes: `
+      <div class="box">
+        <p><strong>Trap:</strong> forgetting verb-final in subordinate clauses.</p>
+        <p><strong>Fix:</strong> treat them like weil/dass: comma + verb at end.</p>
+      </div>
+    `,
+    practice: `
+      <div class="box">
+        <p>Complete with a connector (choose one): wenngleich / sofern / zumal</p>
+        <ul>
+          <li>____ du morgen Zeit hast, können wir telefonieren.</li>
+          <li>Wir bleiben zu Hause, ____ es stark regnet.</li>
+          <li>____ er wenig Erfahrung hat, hat er gute Ideen.</li>
+        </ul>
+      </div>
+    `
+  },
+
 ];
