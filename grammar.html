@@ -7,30 +7,218 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇩🇪</text></svg>">
 
-  <!-- Optional: small helpers without needing style.css changes -->
+  <!-- Page-only layout helpers (works even if style.css is minimal) -->
   <style>
-    /* Keeps layout readable even if style.css doesn't cover these */
-    .tag { display:inline-block; padding:.15rem .5rem; border-radius:999px; font-size:.85rem; margin-right:.35rem; border:1px solid currentColor; opacity:.9; }
-    .tag.a1 { }
-    .tag.a2 { }
-    .tag.b1 { }
-    .tag.b2 { }
-    .tag.c1 { }
-    .tag.c2 { }
-    .note { opacity:.9; }
-    .example-box code { white-space: nowrap; }
-    details { margin-top: .75rem; }
-    details > summary { cursor: pointer; font-weight: 700; }
-    .two-col { display:grid; grid-template-columns: 1fr; gap: 1rem; }
-    @media (min-width: 900px) { .two-col { grid-template-columns: 1fr 1fr; } }
-    .toc a { display:inline-block; margin:.25rem .5rem .25rem 0; }
-    .kicker { opacity:.9; margin-top:.25rem; }
-    .mini-table { width:100%; border-collapse: collapse; margin-top:.5rem; }
-    .mini-table th, .mini-table td { border: 1px solid rgba(0,0,0,.12); padding:.5rem; vertical-align: top; }
+    :root{
+      --panel: rgba(0,0,0,.04);
+      --border: rgba(0,0,0,.10);
+      --muted: rgba(0,0,0,.70);
+      --radius: 14px;
+    }
+
+    .grammar-shell{
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1rem;
+      align-items:start;
+    }
+    @media (max-width: 960px){
+      .grammar-shell{ grid-template-columns: 1fr; }
+      .sidebar{ position: static !important; }
+    }
+
+    .sidebar{
+      position: sticky;
+      top: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: white;
+      padding: 1rem;
+    }
+
+    .sidebar h3{ margin: 0 0 .75rem; }
+    .sidebar .group{ margin-top: 1rem; }
+    .sidebar .pill{
+      display:inline-block;
+      padding:.25rem .55rem;
+      border-radius: 999px;
+      border:1px solid var(--border);
+      margin:.2rem .25rem .2rem 0;
+      font-size:.85rem;
+      cursor:pointer;
+      user-select:none;
+    }
+    .sidebar .pill.active{
+      border-color: rgba(0,0,0,.35);
+      font-weight: 700;
+    }
+
+    .topic-links{
+      margin-top: .5rem;
+      display:flex;
+      flex-direction:column;
+      gap:.35rem;
+      max-height: 45vh;
+      overflow:auto;
+      padding-right:.25rem;
+    }
+    .topic-links a{
+      text-decoration:none;
+      opacity:.95;
+      padding:.35rem .5rem;
+      border-radius: 10px;
+      border:1px solid transparent;
+    }
+    .topic-links a:hover{
+      background: var(--panel);
+      border-color: var(--border);
+    }
+    .topic-links .muted{ color: var(--muted); font-size: .9rem; }
+
+    .content-area{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: white;
+      padding: 1rem;
+    }
+
+    .controls{
+      display:flex;
+      gap:.75rem;
+      flex-wrap:wrap;
+      align-items:center;
+      padding: .75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--panel);
+      margin-bottom: 1rem;
+    }
+    .controls label{ font-size:.9rem; color:var(--muted); }
+    .controls input[type="search"]{
+      flex: 1 1 260px;
+      padding:.6rem .75rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: white;
+      outline: none;
+    }
+    .controls select{
+      padding:.55rem .65rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: white;
+    }
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap:.45rem;
+      padding:.4rem .6rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: white;
+      user-select:none;
+    }
+    .toggle input{ transform: translateY(1px); }
+
+    .topic-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: .85rem;
+    }
+
+    .topic-card{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .95rem;
+      background: white;
+    }
+
+    .topic-head{
+      display:flex;
+      justify-content:space-between;
+      gap: .75rem;
+      align-items:flex-start;
+    }
+
+    .topic-title{
+      margin:0;
+      font-size:1.05rem;
+      line-height:1.25;
+    }
+    .topic-meta{
+      display:flex;
+      gap:.35rem;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+    .tag{
+      display:inline-block;
+      padding:.2rem .5rem;
+      border-radius:999px;
+      border:1px solid var(--border);
+      font-size:.8rem;
+      white-space:nowrap;
+    }
+
+    .topic-summary{
+      margin:.55rem 0 0;
+      color: var(--muted);
+    }
+
+    details{
+      margin-top:.75rem;
+      border-top: 1px dashed var(--border);
+      padding-top:.6rem;
+    }
+    details > summary{
+      cursor:pointer;
+      font-weight:700;
+      list-style:none;
+    }
+    details > summary::-webkit-details-marker{ display:none; }
+
+    .example-box, .tip-box{
+      margin-top:.6rem;
+      padding:.75rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+    }
+    .tip-box strong{ display:inline-block; margin-right:.25rem; }
+
+    .grammar-table, .mini-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:.6rem;
+      overflow:hidden;
+      border-radius: 12px;
+    }
+    .grammar-table th, .grammar-table td,
+    .mini-table th, .mini-table td{
+      border:1px solid var(--border);
+      padding:.55rem;
+      vertical-align:top;
+    }
+
+    .empty-state{
+      display:none;
+      padding: 1.25rem;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.02);
+      color: var(--muted);
+      text-align:center;
+    }
+
+    /* JS toggles */
+    .hide-examples .examples { display:none !important; }
+    .hide-details  .deepdive { display:none !important; }
   </style>
 </head>
 
 <body>
+  <!-- Your existing header (unchanged) -->
   <header class="main-header">
     <div class="container">
       <div class="header-content">
@@ -44,49 +232,12 @@
         </div>
 
         <nav class="main-nav">
-          <a href="index.html" class="nav-link">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            </svg>
-            Verbs
-          </a>
-
-          <a href="nouns.html" class="nav-link">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            </svg>
-            Nouns
-          </a>
-
-          <a href="adjectives.html" class="nav-link">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-            </svg>
-            Adjectives
-          </a>
-
-          <a href="adverbs.html" class="nav-link">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-            </svg>
-            Adverbs
-          </a>
-
-          <a href="practice.html" class="nav-link">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-            Practice
-          </a>
-
-          <a href="grammar.html" class="nav-link active">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-            </svg>
-            Grammar
-          </a>
+          <a href="index.html" class="nav-link">Verbs</a>
+          <a href="nouns.html" class="nav-link">Nouns</a>
+          <a href="adjectives.html" class="nav-link">Adjectives</a>
+          <a href="adverbs.html" class="nav-link">Adverbs</a>
+          <a href="practice.html" class="nav-link">Practice</a>
+          <a href="grammar.html" class="nav-link active">Grammar</a>
         </nav>
       </div>
     </div>
@@ -95,896 +246,454 @@
   <main class="main-content grammar-page">
     <div class="container">
 
-      <!-- Grammar Header -->
       <section class="grammar-header">
-        <h2>German Grammar Guide (A1–C2)</h2>
-        <p class="kicker">
-          A structured, level-based grammar reference with thorough explanations and examples.
-        </p>
-        <p class="note">
-          <span class="tag a1">A1</span>
-          <span class="tag a2">A2</span>
-          <span class="tag b1">B1</span>
-          <span class="tag b2">B2</span>
-          <span class="tag c1">C1</span>
-          <span class="tag c2">C2</span>
-          Labels show the typical CEFR level where the topic becomes essential.
-        </p>
+        <h2>German Grammar (A1–C2)</h2>
+        <p>Filter by level, search topics, and expand only what you need.</p>
       </section>
 
-      <!-- Table of Contents -->
-      <section class="toc-section">
-        <h3>Quick Navigation</h3>
-        <nav class="toc">
-          <a href="#a1">A1 Foundations</a>
-          <a href="#a2">A2 Expansion</a>
-          <a href="#b1">B1 Independence</a>
-          <a href="#b2">B2 Upper-Intermediate</a>
-          <a href="#c1">C1 Advanced</a>
-          <a href="#c2">C2 Mastery</a>
-          <a href="#reference">Reference Tables</a>
-          <a href="#troubleshooting">Common Mistakes</a>
-        </nav>
-      </section>
+      <div class="grammar-shell" id="grammarApp">
 
-      <div class="grammar-content">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+          <h3>Focus</h3>
 
-        <!-- ====================== A1 ====================== -->
-        <section id="a1" class="grammar-section">
-          <h3><span class="tag a1">A1</span> Foundations</h3>
-          <p>Core sentence building: present tense, basic cases, articles, and everyday structures.</p>
+          <div class="group">
+            <div class="muted" style="margin-bottom:.4rem;">Level</div>
+            <div id="levelPills">
+              <span class="pill active" data-level="ALL">All</span>
+              <span class="pill" data-level="A1">A1</span>
+              <span class="pill" data-level="A2">A2</span>
+              <span class="pill" data-level="B1">B1</span>
+              <span class="pill" data-level="B2">B2</span>
+              <span class="pill" data-level="C1">C1</span>
+              <span class="pill" data-level="C2">C2</span>
+            </div>
+          </div>
 
-          <div class="two-col">
-            <div class="subsection">
-              <h4>1) Sentence Basics: Verb-Second (V2) <span class="tag a1">A1</span></h4>
-              <p>
-                In a German main clause, the <strong>conjugated verb is in position 2</strong>.
-                Position 1 can be the subject or any other element (time/place/object) for emphasis.
-              </p>
-              <div class="example-box">
-                <p><strong>Neutral:</strong> Ich <strong>gehe</strong> heute ins Kino.</p>
-                <p><strong>Time first:</strong> Heute <strong>gehe</strong> ich ins Kino.</p>
-                <p><strong>Place first:</strong> Ins Kino <strong>gehe</strong> ich heute.</p>
+          <div class="group">
+            <div class="muted">Jump to topic</div>
+            <div class="topic-links" id="topicLinks">
+              <!-- auto-filled by JS -->
+            </div>
+          </div>
+
+          <div class="group">
+            <div class="muted">Tip</div>
+            <p class="muted" style="margin:.35rem 0 0;">
+              Start with <strong>A1 → Word Order</strong>, then <strong>Cases</strong>, then <strong>Subordinate clauses</strong>.
+            </p>
+          </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <section class="content-area">
+
+          <!-- CONTROLS -->
+          <div class="controls">
+            <label for="searchBox">Search</label>
+            <input id="searchBox" type="search" placeholder="Type a topic… (e.g., dative, weil, passive, Konjunktiv)" />
+
+            <label for="levelSelect">Level</label>
+            <select id="levelSelect">
+              <option value="ALL">All levels</option>
+              <option value="A1">A1</option>
+              <option value="A2">A2</option>
+              <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="C1">C1</option>
+              <option value="C2">C2</option>
+            </select>
+
+            <label class="toggle" title="Hide/show example sections">
+              <input id="toggleExamples" type="checkbox" />
+              Hide examples
+            </label>
+
+            <label class="toggle" title="Hide/show deep-dive sections">
+              <input id="toggleDetails" type="checkbox" />
+              Hide deep dives
+            </label>
+
+            <button class="toggle" id="resetBtn" type="button" title="Reset filters" style="cursor:pointer;">
+              Reset
+            </button>
+          </div>
+
+          <div class="empty-state" id="emptyState">
+            No topics match your filters. Try clearing the search or choosing “All levels”.
+          </div>
+
+          <!-- TOPIC CARDS -->
+          <div class="topic-grid" id="topicGrid">
+
+            <!-- A1 -->
+            <article class="topic-card topic" id="t-v2" data-level="A1" data-tags="word order v2 main clause questions negation">
+              <div class="topic-head">
+                <h4 class="topic-title">Verb-Second (V2) in Main Clauses</h4>
+                <div class="topic-meta">
+                  <span class="tag">A1</span>
+                  <span class="tag">Word order</span>
+                </div>
               </div>
+              <p class="topic-summary">
+                In a main clause, the conjugated verb is in position 2. Position 1 can be the subject or any other element.
+              </p>
 
-              <details>
-                <summary>Questions & negation</summary>
-                <p><strong>Yes/No question:</strong> verb comes first.</p>
+              <details class="examples" open>
+                <summary>Examples</summary>
                 <div class="example-box">
+                  <p>Ich <strong>gehe</strong> heute ins Kino.</p>
+                  <p>Heute <strong>gehe</strong> ich ins Kino.</p>
                   <p><strong>Gehst</strong> du heute ins Kino?</p>
                 </div>
-                <p><strong>W-questions:</strong> question word first, verb second.</p>
-                <div class="example-box">
-                  <p><strong>Wann</strong> gehst du ins Kino?</p>
-                  <p><strong>Warum</strong> lernst du Deutsch?</p>
+              </details>
+
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <div class="tip-box">
+                  <strong>Negation:</strong> <em>nicht</em> negates verbs/phrases; <em>kein</em> negates nouns with no article.
                 </div>
-                <p><strong>Nicht</strong> negates verbs/phrases; <strong>kein</strong> negates nouns with no article.</p>
                 <div class="example-box">
-                  <p>Ich komme <strong>nicht</strong>. (I’m not coming.)</p>
-                  <p>Ich habe <strong>kein</strong> Auto. (I have no car.)</p>
+                  <p>Ich komme <strong>nicht</strong>.</p>
+                  <p>Ich habe <strong>kein</strong> Auto.</p>
                 </div>
               </details>
-            </div>
+            </article>
 
-            <div class="subsection">
-              <h4>2) Present Tense (Präsens) <span class="tag a1">A1</span></h4>
-              <p>
-                Used for <strong>now</strong>, <strong>habit</strong>, and often <strong>future</strong> with time words.
-                Regular endings: -e, -st, -t, -en, -t, -en.
-              </p>
-              <div class="example-box">
-                <p><strong>machen</strong> (to do/make)</p>
-                <ul>
-                  <li>ich mach<strong>e</strong></li>
-                  <li>du mach<strong>st</strong></li>
-                  <li>er/sie/es mach<strong>t</strong></li>
-                  <li>wir mach<strong>en</strong></li>
-                  <li>ihr mach<strong>t</strong></li>
-                  <li>sie/Sie mach<strong>en</strong></li>
-                </ul>
-                <p>Ich <strong>gehe</strong> morgen zum Arzt. (future meaning)</p>
+            <article class="topic-card topic" id="t-cases-basic" data-level="A1" data-tags="cases nominative accusative articles pronouns">
+              <div class="topic-head">
+                <h4 class="topic-title">Cases: Nominative & Accusative</h4>
+                <div class="topic-meta">
+                  <span class="tag">A1</span>
+                  <span class="tag">Cases</span>
+                </div>
               </div>
+              <p class="topic-summary">
+                Nominative is usually the subject; accusative is the direct object. Articles change (der → den).
+              </p>
 
-              <details>
-                <summary>Important irregulars (very common)</summary>
+              <details class="examples" open>
+                <summary>Examples</summary>
                 <div class="example-box">
-                  <p><strong>sein</strong>: ich bin, du bist, er ist, wir sind, ihr seid, sie/Sie sind</p>
-                  <p><strong>haben</strong>: ich habe, du hast, er hat, wir haben, ihr habt, sie/Sie haben</p>
-                  <p><strong>werden</strong>: ich werde, du wirst, er wird, wir werden, ihr werdet, sie/Sie werden</p>
+                  <p><strong>Der</strong> Mann sieht <strong>den</strong> Hund.</p>
+                  <p><strong>Die</strong> Frau kauft <strong>das</strong> Brot.</p>
                 </div>
               </details>
-            </div>
-          </div>
 
-          <div class="two-col">
-            <div class="subsection">
-              <h4>3) Nouns, Gender, Articles <span class="tag a1">A1</span></h4>
-              <p>
-                Nouns have gender: <strong>der</strong> (m), <strong>die</strong> (f), <strong>das</strong> (n).
-                Plural is often unpredictable → learn the plural with the noun.
-              </p>
-              <div class="example-box">
-                <p>der Tisch – die Tisch<strong>e</strong></p>
-                <p>die Frau – die Frau<strong>en</strong></p>
-                <p>das Kind – die Kind<strong>er</strong></p>
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <table class="grammar-table">
+                  <tr><th></th><th>der</th><th>die</th><th>das</th><th>plural</th></tr>
+                  <tr><td><strong>Nominative</strong></td><td>der</td><td>die</td><td>das</td><td>die</td></tr>
+                  <tr><td><strong>Accusative</strong></td><td>den</td><td>die</td><td>das</td><td>die</td></tr>
+                </table>
+              </details>
+            </article>
+
+            <!-- A2 -->
+            <article class="topic-card topic" id="t-perfekt" data-level="A2" data-tags="past tense perfekt haben sein participle partizip">
+              <div class="topic-head">
+                <h4 class="topic-title">Perfekt (Spoken Past): haben/sein + Partizip II</h4>
+                <div class="topic-meta">
+                  <span class="tag">A2</span>
+                  <span class="tag">Tenses</span>
+                </div>
               </div>
+              <p class="topic-summary">
+                The most common spoken past tense: auxiliary in position 2 and participle at the end.
+              </p>
 
-              <details>
-                <summary>Indefinite articles & plural</summary>
+              <details class="examples" open>
+                <summary>Examples</summary>
                 <div class="example-box">
-                  <p>ein Tisch, eine Frau, ein Kind</p>
-                  <p><strong>No</strong> indefinite article in plural: Ich habe Bücher. (not *eine Bücher*)</p>
+                  <p>Ich <strong>habe</strong> Pizza <strong>gegessen</strong>.</p>
+                  <p>Ich <strong>bin</strong> nach Hause <strong>gegangen</strong>.</p>
                 </div>
               </details>
-            </div>
 
-            <div class="subsection">
-              <h4>4) Cases: Nominative & Accusative <span class="tag a1">A1</span></h4>
-              <p>
-                German marks function via cases.
-                <strong>Nominative</strong> is usually the subject; <strong>accusative</strong> is the direct object.
-              </p>
-              <table class="grammar-table">
-                <tr><th></th><th>der</th><th>die</th><th>das</th><th>plural</th></tr>
-                <tr><td><strong>Nominative</strong></td><td>der</td><td>die</td><td>das</td><td>die</td></tr>
-                <tr><td><strong>Accusative</strong></td><td>den</td><td>die</td><td>das</td><td>die</td></tr>
-              </table>
-              <div class="example-box">
-                <p><strong>Der</strong> Mann sieht <strong>den</strong> Hund.</p>
-                <p><strong>Die</strong> Frau kauft <strong>das</strong> Brot.</p>
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <div class="tip-box">
+                  <strong>Use “sein”</strong> with movement/change of state (gehen, kommen, fahren, einschlafen, werden…).
+                </div>
+                <div class="example-box">
+                  <p><strong>Regular:</strong> machen → gemacht</p>
+                  <p><strong>Irregular:</strong> gehen → gegangen</p>
+                  <p><strong>Inseparable:</strong> besuchen → besucht (no “ge-”)</p>
+                </div>
+              </details>
+            </article>
+
+            <article class="topic-card topic" id="t-dative" data-level="A2" data-tags="dative wem verbs helfen gefallen prepositions">
+              <div class="topic-head">
+                <h4 class="topic-title">Dative (Wem?) + Common Dative Verbs</h4>
+                <div class="topic-meta">
+                  <span class="tag">A2</span>
+                  <span class="tag">Cases</span>
+                </div>
               </div>
+              <p class="topic-summary">
+                Dative marks the indirect object and is required by many verbs/prepositions (helfen, danken, mit, zu…).
+              </p>
 
-              <details>
-                <summary>Personal pronouns (Nom/Akk)</summary>
-                <table class="mini-table">
-                  <tr><th></th><th>Nominative</th><th>Accusative</th></tr>
-                  <tr><td>1st</td><td>ich / wir</td><td>mich / uns</td></tr>
-                  <tr><td>2nd</td><td>du / ihr</td><td>dich / euch</td></tr>
-                  <tr><td>3rd</td><td>er/sie/es / sie</td><td>ihn/sie/es / sie</td></tr>
-                  <tr><td>formal</td><td>Sie</td><td>Sie</td></tr>
+              <details class="examples" open>
+                <summary>Examples</summary>
+                <div class="example-box">
+                  <p>Ich gebe <strong>dem</strong> Mann das Buch.</p>
+                  <p>Das Hemd <strong>gefällt</strong> mir.</p>
+                  <p>Ich fahre <strong>mit</strong> dem Bus.</p>
+                </div>
+              </details>
+
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <table class="grammar-table">
+                  <tr><th></th><th>der</th><th>die</th><th>das</th><th>plural</th></tr>
+                  <tr><td><strong>Dative</strong></td><td>dem</td><td>der</td><td>dem</td><td>den (+n)</td></tr>
                 </table>
                 <div class="example-box">
-                  <p>Er besucht <strong>mich</strong>. / Ich besuche <strong>ihn</strong>.</p>
+                  <p><strong>Dative verbs:</strong> helfen, danken, gefallen, gehören, antworten, passen, zuhören</p>
                 </div>
               </details>
-            </div>
-          </div>
+            </article>
 
-          <div class="subsection">
-            <h4>5) Basic Prepositions <span class="tag a1">A1</span></h4>
-            <p>Some prepositions require a fixed case. Learn them as “preposition + case”.</p>
-            <div class="two-col">
-              <div class="example-box">
-                <p><strong>Accusative:</strong> für, ohne, durch, gegen, um</p>
-                <p>Ich lerne Deutsch <strong>für</strong> die Arbeit.</p>
+            <article class="topic-card topic" id="t-subordinate" data-level="A2" data-tags="subordinate clause weil dass wenn verb final word order comma">
+              <div class="topic-head">
+                <h4 class="topic-title">Subordinate Clauses: dass / weil / wenn (Verb at the End)</h4>
+                <div class="topic-meta">
+                  <span class="tag">A2</span>
+                  <span class="tag">Word order</span>
+                </div>
               </div>
-              <div class="example-box">
-                <p><strong>Dative:</strong> mit, nach, bei, seit, von, zu</p>
-                <p>Ich fahre <strong>mit</strong> dem Bus. / Ich wohne <strong>bei</strong> meinen Eltern.</p>
-              </div>
-            </div>
-
-            <details>
-              <summary>Two-way prepositions (Akk/Dat): location vs direction</summary>
-              <p><strong>in, an, auf, unter, über, vor, hinter, neben, zwischen</strong></p>
-              <p><strong>Dative</strong> = location (where?), <strong>Accusative</strong> = direction (where to?).</p>
-              <div class="example-box">
-                <p>Ich bin <strong>in dem</strong> Zimmer. (Where? → Dat)</p>
-                <p>Ich gehe <strong>in das</strong> Zimmer. (Where to? → Akk)</p>
-                <p>Contractions: in dem → <strong>im</strong>, zu dem → <strong>zum</strong>, zu der → <strong>zur</strong></p>
-              </div>
-            </details>
-          </div>
-        </section>
-
-        <!-- ====================== A2 ====================== -->
-        <section id="a2" class="grammar-section">
-          <h3><span class="tag a2">A2</span> Expansion</h3>
-          <p>Past tense in speech, separable verbs, dative, adjective endings basics, and common clause patterns.</p>
-
-          <div class="subsection">
-            <h4>1) Perfekt (Present Perfect) <span class="tag a2">A2</span></h4>
-            <p>
-              Most common past tense in spoken German: <strong>haben/sein + Partizip II</strong>.
-              The participle usually goes to the end of the clause.
-            </p>
-            <div class="example-box">
-              <p>Ich <strong>habe</strong> Pizza <strong>gegessen</strong>.</p>
-              <p>Ich <strong>bin</strong> nach Hause <strong>gegangen</strong>.</p>
-            </div>
-            <div class="tip-box">
-              <strong>💡 Rule of thumb:</strong> use <em>sein</em> with movement/change of state (gehen, kommen, fahren, einschlafen, sterben, werden).
-            </div>
-
-            <details>
-              <summary>How to build the participle</summary>
-              <ul>
-                <li><strong>Regular:</strong> ge + stem + t → machen → gemacht</li>
-                <li><strong>Irregular:</strong> ge + stem + en (often) → gehen → gegangen</li>
-                <li><strong>Separable prefix:</strong> prefix + ge + stem + t/en → aufmachen → aufgemacht</li>
-                <li><strong>Inseparable prefix:</strong> no “ge-” → besuchen → besucht, verstehen → verstanden</li>
-              </ul>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>2) Dative Case (Wem?) <span class="tag a2">A2</span></h4>
-            <p>
-              Dative often marks the indirect object (to/for whom?), and is required after many prepositions.
-            </p>
-            <table class="grammar-table">
-              <tr><th></th><th>der</th><th>die</th><th>das</th><th>plural</th></tr>
-              <tr><td><strong>Dative</strong></td><td>dem</td><td>der</td><td>dem</td><td>den (+n)</td></tr>
-            </table>
-            <div class="example-box">
-              <p>Ich gebe <strong>dem</strong> Mann <strong>das</strong> Buch.</p>
-              <p>Ich helfe <strong>der</strong> Frau.</p>
-              <p>Ich spreche mit <strong>den</strong> Kind<strong>ern</strong>. (plural often adds -n)</p>
-            </div>
-
-            <details>
-              <summary>Common dative verbs</summary>
-              <div class="example-box">
-                <p>helfen, danken, gefallen, gehören, antworten, passen, zuhören, glauben</p>
-                <p>Das Hemd <strong>gefällt</strong> mir.</p>
-                <p>Ich <strong>danke</strong> Ihnen.</p>
-              </div>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>3) Separable & Inseparable Verbs <span class="tag a2">A2</span></h4>
-            <p>
-              Separable prefixes split in main clauses; inseparable prefixes never split (be-, ver-, er-, ent-, zer-, miss-, ge-).
-            </p>
-            <div class="two-col">
-              <div class="example-box">
-                <p><strong>Separable:</strong> aufstehen</p>
-                <p>Ich <strong>stehe</strong> um 7 Uhr <strong>auf</strong>.</p>
-                <p>Ich bin um 7 Uhr <strong>aufgestanden</strong>.</p>
-              </div>
-              <div class="example-box">
-                <p><strong>Inseparable:</strong> besuchen</p>
-                <p>Ich <strong>besuche</strong> meine Oma.</p>
-                <p>Ich habe meine Oma <strong>besucht</strong>.</p>
-              </div>
-            </div>
-
-            <details>
-              <summary>Stress test (helpful trick)</summary>
-              <p>
-                Often separable prefixes are stressed (AUSgehen), inseparable are not (beSUchen).
-                Not perfect, but helpful.
+              <p class="topic-summary">
+                In subordinate clauses, the conjugated verb goes to the end. The main clause stays V2.
               </p>
-            </details>
-          </div>
 
-          <div class="subsection">
-            <h4>4) Modal Verbs & Word Order <span class="tag a2">A2</span></h4>
-            <p>
-              Modal is conjugated in position 2; the main verb goes to the end in infinitive.
-            </p>
-            <div class="example-box">
-              <p>Ich <strong>muss</strong> heute länger <strong>arbeiten</strong>.</p>
-              <p>Wir <strong>wollen</strong> ins Museum <strong>gehen</strong>.</p>
-            </div>
+              <details class="examples" open>
+                <summary>Examples</summary>
+                <div class="example-box">
+                  <p>Ich denke, <strong>dass</strong> er heute <strong>kommt</strong>.</p>
+                  <p>Ich bleibe zu Hause, <strong>weil</strong> ich krank <strong>bin</strong>.</p>
+                  <p><strong>Wenn</strong> es regnet, <strong>bleibe</strong> ich zu Hause.</p>
+                </div>
+              </details>
 
-            <details>
-              <summary>Negation placement with modals</summary>
-              <div class="example-box">
-                <p>Ich kann <strong>nicht</strong> kommen. (negates “can come”) </p>
-                <p>Ich kann heute <strong>nicht</strong> kommen. (time + negation)</p>
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <div class="tip-box">
+                  <strong>Comma:</strong> subordinate clauses are normally separated by a comma in German.
+                </div>
+              </details>
+            </article>
+
+            <!-- B1 -->
+            <article class="topic-card topic" id="t-relative" data-level="B1" data-tags="relative clauses relativsatz der die das den dem whose dessen deren">
+              <div class="topic-head">
+                <h4 class="topic-title">Relative Clauses (Relativsätze)</h4>
+                <div class="topic-meta">
+                  <span class="tag">B1</span>
+                  <span class="tag">Clauses</span>
+                </div>
               </div>
-            </details>
-          </div>
+              <p class="topic-summary">
+                Relative pronoun gender/number matches the noun, but the case depends on the pronoun’s role inside the clause.
+              </p>
 
-          <div class="subsection">
-            <h4>5) Subordinate Clauses: <em>dass / weil / wenn</em> <span class="tag a2">A2</span></h4>
-            <p>
-              In subordinate clauses, the conjugated verb goes to the <strong>end</strong>.
-              Main clause remains V2.
-            </p>
-            <div class="example-box">
-              <p>Ich denke, <strong>dass</strong> er heute <strong>kommt</strong>.</p>
-              <p>Ich bleibe zu Hause, <strong>weil</strong> ich krank <strong>bin</strong>.</p>
-              <p><strong>Wenn</strong> es regnet, <strong>bleibe</strong> ich zu Hause.</p>
-            </div>
+              <details class="examples" open>
+                <summary>Examples</summary>
+                <div class="example-box">
+                  <p>Das ist der Mann, <strong>der</strong> hier wohnt.</p>
+                  <p>Das ist der Mann, <strong>den</strong> ich kenne.</p>
+                  <p>Das ist der Mann, <strong>dem</strong> ich helfe.</p>
+                </div>
+              </details>
 
-            <details>
-              <summary>Comma rule</summary>
-              <p>German subordinate clauses are normally separated by a comma.</p>
-            </details>
-          </div>
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <div class="tip-box">
+                  <strong>Shortcut:</strong> Ask what the pronoun does in the relative clause: subject (Nom), object (Akk), indirect object (Dat).
+                </div>
+              </details>
+            </article>
 
-          <div class="subsection">
-            <h4>6) Adjective Basics (Attributive) <span class="tag a2">A2</span></h4>
-            <p>
-              When an adjective comes before a noun (attributive), it takes an ending.
-              The ending depends on <strong>case + gender + article type</strong>.
-            </p>
-            <div class="example-box">
-              <p>ein klein<strong>es</strong> Kind</p>
-              <p>der klein<strong>e</strong> Hund</p>
-              <p>mit dem klein<strong>en</strong> Hund (dative)</p>
-            </div>
+            <article class="topic-card topic" id="t-passive" data-level="B1" data-tags="passive werden partizip II vorgangspassiv von durch">
+              <div class="topic-head">
+                <h4 class="topic-title">Passive Voice: werden + Partizip II (Vorgangspassiv)</h4>
+                <div class="topic-meta">
+                  <span class="tag">B1</span>
+                  <span class="tag">Voice</span>
+                </div>
+              </div>
+              <p class="topic-summary">
+                Passive focuses on the action. Add the agent with <em>von</em> (people) or cause/means with <em>durch</em>.
+              </p>
 
-            <details>
-              <summary>Practical learning approach</summary>
-              <ul>
-                <li>Start with common patterns: <strong>der/ein</strong> + adjective endings in nominative/accusative.</li>
-                <li>Then learn dative patterns (often <strong>-en</strong>).</li>
-              </ul>
-            </details>
+              <details class="examples" open>
+                <summary>Examples</summary>
+                <div class="example-box">
+                  <p>Die Suppe <strong>wird</strong> (vom Koch) <strong>gekocht</strong>.</p>
+                  <p>Viele Probleme werden <strong>durch</strong> Stress verursacht.</p>
+                </div>
+              </details>
+
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <div class="example-box">
+                  <p>Perfekt: Die Suppe <strong>ist</strong> gekocht <strong>worden</strong>.</p>
+                </div>
+              </details>
+            </article>
+
+            <article class="topic-card topic" id="t-konj2" data-level="B1" data-tags="konjunktiv II würde wäre hätte polite wishes unreal condition">
+              <div class="topic-head">
+                <h4 class="topic-title">Konjunktiv II: Politeness & Hypotheticals</h4>
+                <div class="topic-meta">
+                  <span class="tag">B1</span>
+                  <span class="tag">Mood</span>
+                </div>
+              </div>
+              <p class="topic-summary">
+                Use Konjunktiv II for polite requests, wishes, and unreal situations. Often: <em>würde + infinitive</em>.
+              </p>
+
+              <details class="examples" open>
+                <summary>Examples</summary>
+                <div class="example-box">
+                  <p><strong>Könnten</strong> Sie mir helfen?</p>
+                  <p>Wenn ich Zeit <strong>hätte</strong>, <strong>würde</strong> ich reisen.</p>
+                  <p>Ich <strong>wäre</strong> gern dort.</p>
+                </div>
+              </details>
+
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <div class="example-box">
+                  <p>Common forms: <strong>wäre</strong>, <strong>hätte</strong>, <strong>könnte</strong>, <strong>müsste</strong></p>
+                </div>
+              </details>
+            </article>
+
+            <!-- B2 -->
+            <article class="topic-card topic" id="t-state-passive" data-level="B2" data-tags="zustandspassiv sein partizip II state vs action">
+              <div class="topic-head">
+                <h4 class="topic-title">State vs Action Passive: sein + Partizip II</h4>
+                <div class="topic-meta">
+                  <span class="tag">B2</span>
+                  <span class="tag">Voice</span>
+                </div>
+              </div>
+              <p class="topic-summary">
+                <em>werden</em> passive = action happening; <em>sein</em> passive = resulting state.
+              </p>
+
+              <details class="examples" open>
+                <summary>Examples</summary>
+                <div class="example-box">
+                  <p>Die Tür <strong>wird</strong> geöffnet. (action)</p>
+                  <p>Die Tür <strong>ist</strong> geöffnet. (state)</p>
+                </div>
+              </details>
+
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <div class="tip-box">
+                  <strong>Test:</strong> If you can add “right now”, it’s usually action passive: “Die Tür wird gerade geöffnet.”
+                </div>
+              </details>
+            </article>
+
+            <article class="topic-card topic" id="t-konj1" data-level="B2" data-tags="konjunktiv I reported speech sei habe werde">
+              <div class="topic-head">
+                <h4 class="topic-title">Konjunktiv I (Reported Speech)</h4>
+                <div class="topic-meta">
+                  <span class="tag">B2</span>
+                  <span class="tag">Mood</span>
+                </div>
+              </div>
+              <p class="topic-summary">
+                Used in news/reporting to distance the speaker from the statement. Especially common with <em>sein/haben/werden</em>.
+              </p>
+
+              <details class="examples" open>
+                <summary>Examples</summary>
+                <div class="example-box">
+                  <p>Er sagt, er <strong>sei</strong> krank.</p>
+                  <p>Sie behauptet, sie <strong>habe</strong> nichts gesehen.</p>
+                  <p>Der Sprecher erklärte, die Lage <strong>werde</strong> sich verbessern.</p>
+                </div>
+              </details>
+
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <div class="example-box">
+                  <p>Alternative: Er sagte, dass er krank <strong>ist</strong>. / Er sagte, er <strong>wäre</strong> krank. (K II distancing)</p>
+                </div>
+              </details>
+            </article>
+
+            <!-- C1 -->
+            <article class="topic-card topic" id="t-nominalization" data-level="C1" data-tags="nominalization nominalstil akademisch -ung -keit -tion">
+              <div class="topic-head">
+                <h4 class="topic-title">Nominalization (Nominalstil) in Formal German</h4>
+                <div class="topic-meta">
+                  <span class="tag">C1</span>
+                  <span class="tag">Style</span>
+                </div>
+              </div>
+              <p class="topic-summary">
+                Formal writing often turns actions into nouns (Analyse der Entwicklung), increasing density and abstraction.
+              </p>
+
+              <details class="examples" open>
+                <summary>Examples</summary>
+                <div class="example-box">
+                  <p><strong>Verb style:</strong> Wir analysieren, wie sich der Markt entwickelt.</p>
+                  <p><strong>Nominal style:</strong> Wir führen eine Analyse der Marktentwicklung durch.</p>
+                </div>
+              </details>
+
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <div class="example-box">
+                  <p>entwickeln → Entwicklung, möglich → Möglichkeit, informieren → Information</p>
+                  <p>eine Entscheidung treffen, eine Untersuchung durchführen</p>
+                </div>
+              </details>
+            </article>
+
+            <!-- C2 -->
+            <article class="topic-card topic" id="t-idioms" data-level="C2" data-tags="je desto es sei denn geschweige denn nicht nur sondern auch">
+              <div class="topic-head">
+                <h4 class="topic-title">C2 Patterns: Fixed Structures for Precision</h4>
+                <div class="topic-meta">
+                  <span class="tag">C2</span>
+                  <span class="tag">Patterns</span>
+                </div>
+              </div>
+              <p class="topic-summary">
+                Near-native control includes idiomatic structures that package logic elegantly.
+              </p>
+
+              <details class="examples" open>
+                <summary>Examples</summary>
+                <div class="example-box">
+                  <p><strong>Je</strong> mehr ich lerne, <strong>desto</strong> besser werde ich.</p>
+                  <p>Ich komme, <strong>es sei denn</strong>, ich bin krank.</p>
+                  <p>Er hat es nicht erklärt, <strong>geschweige denn</strong> bewiesen.</p>
+                  <p><strong>Nicht nur</strong> ist er pünktlich, <strong>sondern</strong> auch sehr zuverlässig.</p>
+                </div>
+              </details>
+
+              <details class="deepdive">
+                <summary>Deep dive</summary>
+                <div class="tip-box">
+                  <strong>Goal:</strong> use these without “thinking about the grammar” — they become templates.
+                </div>
+              </details>
+            </article>
+
           </div>
         </section>
-
-        <!-- ====================== B1 ====================== -->
-        <section id="b1" class="grammar-section">
-          <h3><span class="tag b1">B1</span> Independence</h3>
-          <p>Narration, opinions, relative clauses, passive basics, Konjunktiv II for politeness, and more complex connectors.</p>
-
-          <div class="subsection">
-            <h4>1) Präteritum vs Perfekt <span class="tag b1">B1</span></h4>
-            <p>
-              <strong>Perfekt</strong> dominates spoken German, but <strong>Präteritum</strong> is common in writing and with
-              a few frequent verbs in speech: <em>sein, haben, werden, wissen, denken, finden, geben, gehen</em> (varies).
-            </p>
-            <div class="example-box">
-              <p>Gestern <strong>war</strong> ich müde. (common in speech)</p>
-              <p>Früher <strong>hatte</strong> ich mehr Zeit.</p>
-              <p>Dann <strong>ging</strong> er nach Hause. (narrative)</p>
-            </div>
-          </div>
-
-          <div class="subsection">
-            <h4>2) Genitive (Wessen?) <span class="tag b1">B1</span></h4>
-            <p>
-              Genitive marks possession/association. In everyday speech it’s often replaced by <em>von + dative</em>,
-              but genitive is important in formal writing.
-            </p>
-            <div class="example-box">
-              <p><strong>Genitive:</strong> Das ist das Auto <strong>des</strong> Mann<strong>es</strong>.</p>
-              <p><strong>Alternative:</strong> Das ist das Auto <strong>von dem</strong> Mann.</p>
-              <p>Die Tasche <strong>der</strong> Frau.</p>
-            </div>
-
-            <details>
-              <summary>Genitive prepositions</summary>
-              <div class="example-box">
-                <p>wegen, trotz, während, statt/anstatt, innerhalb, außerhalb</p>
-                <p><strong>Wegen</strong> des Wetters bleiben wir zu Hause.</p>
-              </div>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>3) Relative Clauses (Relativsätze) <span class="tag b1">B1</span></h4>
-            <p>
-              Use relative pronouns (<em>der/die/das</em> etc.) to add information about a noun.
-              The relative pronoun’s <strong>gender/number</strong> comes from the noun, but its <strong>case</strong>
-              comes from its role <em>inside the relative clause</em>.
-            </p>
-            <div class="example-box">
-              <p>Das ist der Mann, <strong>der</strong> hier wohnt. (subject → nominative)</p>
-              <p>Das ist der Mann, <strong>den</strong> ich kenne. (object → accusative)</p>
-              <p>Das ist der Mann, <strong>dem</strong> ich helfe. (dative)</p>
-            </div>
-
-            <details>
-              <summary>Relative adverbs: wo, wohin, woher</summary>
-              <div class="example-box">
-                <p>Das ist die Stadt, <strong>in der</strong> ich geboren bin.</p>
-                <p>Das ist die Stadt, <strong>wo</strong> ich geboren bin. (informal)</p>
-              </div>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>4) Passive Voice (Vorgangspassiv) <span class="tag b1">B1</span></h4>
-            <p>
-              Passive focuses on the action/result rather than the doer.
-              Form: <strong>werden + Partizip II</strong>.
-            </p>
-            <div class="example-box">
-              <p>Aktiv: Der Koch kocht die Suppe.</p>
-              <p>Passiv: Die Suppe <strong>wird</strong> (vom Koch) <strong>gekocht</strong>.</p>
-              <p>Präteritum: Die Suppe <strong>wurde</strong> gekocht.</p>
-              <p>Perfekt: Die Suppe <strong>ist</strong> gekocht <strong>worden</strong>.</p>
-            </div>
-
-            <details>
-              <summary>How to add the agent</summary>
-              <p><strong>von</strong> (by) for people/agents; <strong>durch</strong> (through) for means/cause.</p>
-              <div class="example-box">
-                <p>Das Haus wird <strong>von</strong> einer Firma renoviert.</p>
-                <p>Viele Probleme werden <strong>durch</strong> Stress verursacht.</p>
-              </div>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>5) Konjunktiv II for Politeness & Hypotheses <span class="tag b1">B1</span></h4>
-            <p>
-              Used for politeness, wishes, and unreal situations. Often formed with <strong>würde + infinitive</strong>.
-            </p>
-            <div class="example-box">
-              <p><strong>Polite:</strong> Könnten Sie mir helfen?</p>
-              <p><strong>Wish:</strong> Ich <strong>würde</strong> gern mehr Zeit haben.</p>
-              <p><strong>Unreal:</strong> Wenn ich Geld hätte, <strong>würde</strong> ich reisen.</p>
-            </div>
-
-            <details>
-              <summary>Common “true” Konjunktiv II forms</summary>
-              <div class="example-box">
-                <p>sein → ich <strong>wäre</strong>, haben → ich <strong>hätte</strong></p>
-                <p>können → ich <strong>könnte</strong>, müssen → ich <strong>müsste</strong></p>
-              </div>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>6) Infinitive Clauses: <em>zu</em> <span class="tag b1">B1</span></h4>
-            <p>
-              Use <strong>zu + infinitive</strong> when the subject is the same or understood.
-            </p>
-            <div class="example-box">
-              <p>Ich versuche, früh <strong>zu schlafen</strong>.</p>
-              <p>Es ist wichtig, genug Wasser <strong>zu trinken</strong>.</p>
-            </div>
-
-            <details>
-              <summary>Where does “zu” go with prefixes?</summary>
-              <div class="example-box">
-                <p><strong>Separable:</strong> anzufangen, aufzustehen, mitzukommen</p>
-                <p><strong>Inseparable:</strong> zu besuchen (no split), zu verstehen</p>
-              </div>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>7) Connectors (Konjunktionen) <span class="tag b1">B1</span></h4>
-            <p>
-              Coordinating connectors keep word order: <em>und, oder, aber, denn</em>.
-              Subordinating connectors push the verb to the end: <em>weil, dass, obwohl, wenn</em>.
-            </p>
-            <div class="example-box">
-              <p>Ich bleibe, <strong>denn</strong> ich bin müde. (V2 after denn)</p>
-              <p>Ich bleibe, <strong>weil</strong> ich müde <strong>bin</strong>. (verb-final)</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- ====================== B2 ====================== -->
-        <section id="b2" class="grammar-section">
-          <h3><span class="tag b2">B2</span> Upper-Intermediate</h3>
-          <p>Nuance, advanced word order, passive variations, reported speech basics, and precise clause linking.</p>
-
-          <div class="subsection">
-            <h4>1) Verb Brackets (Satzklammer) & Midfield Order <span class="tag b2">B2</span></h4>
-            <p>
-              German often forms a “bracket”: the conjugated verb (or auxiliary) early, and the rest of the verb late.
-              Elements in the middle (Mittelfeld) have tendencies:
-              <strong>TEKAMOLO</strong> (Time–Cause–Manner–Place) is a helpful guideline, not an absolute law.
-            </p>
-            <div class="example-box">
-              <p>Ich <strong>habe</strong> gestern wegen der Arbeit schnell <strong>nach Hause gefahren</strong>.</p>
-              <p><code>aux</code> + [time] [cause] [manner] [place] + <code>past participle</code></p>
-            </div>
-
-            <details>
-              <summary>Pronoun order (common tendency)</summary>
-              <p>Pronouns tend to come earlier than full nouns. Dative pronoun often before accusative noun.</p>
-              <div class="example-box">
-                <p>Ich gebe <strong>ihm</strong> das Buch.</p>
-                <p>Ich gebe das Buch <strong>dem Mann</strong>.</p>
-                <p>Ich gebe <strong>es</strong> <strong>ihm</strong>. / Ich gebe <strong>ihm</strong> <strong>es</strong>. (both possible; focus differs)</p>
-              </div>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>2) Zustandspassiv (State Passive) <span class="tag b2">B2</span></h4>
-            <p>
-              Distinguish action vs resulting state:
-              <strong>werden + Partizip II</strong> (action) vs <strong>sein + Partizip II</strong> (state).
-            </p>
-            <div class="example-box">
-              <p><strong>Vorgangspassiv:</strong> Die Tür <strong>wird</strong> geöffnet. (someone is opening it)</p>
-              <p><strong>Zustandspassiv:</strong> Die Tür <strong>ist</strong> geöffnet. (it is open)</p>
-            </div>
-          </div>
-
-          <div class="subsection">
-            <h4>3) Konjunktiv I (Reported Speech) <span class="tag b2">B2</span></h4>
-            <p>
-              Used in news/reporting to distance the speaker from the statement.
-              If Konjunktiv I forms are ambiguous, German often switches to Konjunktiv II or uses reporting verbs + dass.
-            </p>
-            <div class="example-box">
-              <p>Er sagt, er <strong>sei</strong> krank.</p>
-              <p>Sie behauptet, sie <strong>habe</strong> nichts gesehen.</p>
-              <p>Der Sprecher erklärte, die Lage <strong>werde</strong> sich verbessern.</p>
-            </div>
-
-            <details>
-              <summary>Alternative strategies</summary>
-              <div class="example-box">
-                <p>Er sagte, dass er krank <strong>ist</strong>. (neutral/less “journalistic”)</p>
-                <p>Er sagte, er <strong>wäre</strong> krank. (Konjunktiv II distancing)</p>
-              </div>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>4) Advanced Subordinators & Sentence Linking <span class="tag b2">B2</span></h4>
-            <p>
-              Use precise connectors to show logic: contrast, concession, cause, purpose, condition.
-            </p>
-            <div class="prep-grid">
-              <div class="prep-card">
-                <h5>Concession</h5>
-                <ul>
-                  <li><strong>obwohl</strong> … (although)</li>
-                  <li><strong>trotzdem</strong> (nevertheless, main-clause adverb)</li>
-                </ul>
-              </div>
-              <div class="prep-card">
-                <h5>Cause / Result</h5>
-                <ul>
-                  <li><strong>da</strong> … (since; often more formal than weil)</li>
-                  <li><strong>deshalb/deswegen</strong> (therefore; V2 after)</li>
-                </ul>
-              </div>
-              <div class="prep-card">
-                <h5>Purpose</h5>
-                <ul>
-                  <li><strong>damit</strong> … (so that; different subject possible)</li>
-                  <li><strong>um … zu</strong> (in order to; same subject)</li>
-                </ul>
-              </div>
-              <div class="prep-card">
-                <h5>Condition</h5>
-                <ul>
-                  <li><strong>falls</strong> … (in case)</li>
-                  <li><strong>sofern</strong> … (provided that; formal)</li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="example-box">
-              <p><strong>Obwohl</strong> es spät <strong>war</strong>, sind wir geblieben.</p>
-              <p>Es war spät; <strong>trotzdem</strong> <strong>sind</strong> wir geblieben.</p>
-              <p>Ich lerne, <strong>damit</strong> ich die Prüfung <strong>bestehe</strong>.</p>
-              <p>Ich lerne, <strong>um</strong> die Prüfung <strong>zu bestehen</strong>.</p>
-            </div>
-          </div>
-
-          <div class="subsection">
-            <h4>5) Participles as Adjectives & Reduced Clauses <span class="tag b2">B2</span></h4>
-            <p>
-              Participles can act like adjectives for compact writing:
-              <strong>Partizip I</strong> (ongoing) and <strong>Partizip II</strong> (completed/passive).
-            </p>
-            <div class="example-box">
-              <p>ein <strong>lachender</strong> Mann (laughing)</p>
-              <p>die <strong>geschlossene</strong> Tür (closed)</p>
-              <p>die <strong>in Berlin geborene</strong> Autorin (born in Berlin)</p>
-            </div>
-
-            <details>
-              <summary>Meaning difference</summary>
-              <div class="example-box">
-                <p>die <strong>kochende</strong> Suppe (soup that is boiling)</p>
-                <p>die <strong>gekochte</strong> Suppe (soup that has been cooked)</p>
-              </div>
-            </details>
-          </div>
-        </section>
-
-        <!-- ====================== C1 ====================== -->
-        <section id="c1" class="grammar-section">
-          <h3><span class="tag c1">C1</span> Advanced</h3>
-          <p>Academic style, fine nuance, nominalizations, complex embedding, and register control.</p>
-
-          <div class="subsection">
-            <h4>1) Nominalization (Nominalstil) <span class="tag c1">C1</span></h4>
-            <p>
-              German formal writing often uses nouns instead of verbs/adjectives for a compact, abstract style.
-              This increases density but can reduce readability.
-            </p>
-            <div class="example-box">
-              <p><strong>Verb style:</strong> Wir analysieren, wie sich der Markt entwickelt.</p>
-              <p><strong>Nominal style:</strong> Wir führen eine Analyse der Marktentwicklung durch.</p>
-            </div>
-
-            <details>
-              <summary>Common patterns</summary>
-              <ul>
-                <li><strong>-ung</strong>: entwickeln → Entwicklung</li>
-                <li><strong>-heit/-keit</strong>: möglich → Möglichkeit</li>
-                <li><strong>-tion</strong>: informieren → Information</li>
-                <li>verb-noun phrases: <em>eine Entscheidung treffen, eine Untersuchung durchführen</em></li>
-              </ul>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>2) Complex Clause Embedding & Verb Clusters <span class="tag c1">C1</span></h4>
-            <p>
-              Multiple verbs can stack at the end (especially with modals, passive, perfect).
-              Understanding “verb clusters” is key for C1 reading.
-            </p>
-            <div class="example-box">
-              <p>Er sagt, dass das Problem schnell <strong>gelöst werden muss</strong>.</p>
-              <p>Sie behauptet, dass er das nicht <strong>gesehen haben kann</strong>.</p>
-              <p>Es ist bekannt, dass die Daten <strong>analysiert worden sind</strong>. (formal)</p>
-            </div>
-
-            <details>
-              <summary>“Ersatzinfinitiv” (double infinitive in perfect)</summary>
-              <p>With modals, German often uses infinitive instead of participle:</p>
-              <div class="example-box">
-                <p>Ich habe es nicht <strong>sagen können</strong>. (not *gesagt gekonnt*)</p>
-                <p>Er hat kommen <strong>müssen</strong>.</p>
-              </div>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>3) Advanced Reference: <em>dessen/deren</em>, “da-/wo-” <span class="tag c1">C1</span></h4>
-            <p>
-              Precise reference improves clarity in long sentences.
-            </p>
-            <div class="example-box">
-              <p>Das ist der Autor, <strong>dessen</strong> Buch ich gelesen habe.</p>
-              <p>Das ist die Firma, <strong>deren</strong> Produkte weltweit verkauft werden.</p>
-              <p>Wir sprechen darüber, <strong>worüber</strong> viele lieber schweigen.</p>
-            </div>
-
-            <details>
-              <summary>Choosing da- vs preposition + pronoun</summary>
-              <div class="example-box">
-                <p>Ich denke <strong>daran</strong>. / Ich denke <strong>an es</strong>. (rare; “daran” preferred)</p>
-                <p>Ich freue mich <strong>darauf</strong>, dich zu sehen.</p>
-              </div>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>4) Modal Particles (Nuance) <span class="tag c1">C1</span></h4>
-            <p>
-              Modal particles (often untranslatable) add attitude/softness:
-              <em>doch, ja, mal, denn, halt, eben, schon, wohl</em>.
-              They are crucial for natural-sounding German.
-            </p>
-            <div class="example-box">
-              <p>Komm <strong>doch</strong> rein! (encouraging)</p>
-              <p>Das ist <strong>ja</strong> interessant. (surprise / shared knowledge)</p>
-              <p>Wart <strong>mal</strong> kurz. (softens request)</p>
-              <p>Wie heißt du <strong>denn</strong>? (curious tone)</p>
-            </div>
-
-            <details>
-              <summary>Common contrasts</summary>
-              <div class="example-box">
-                <p>Das ist <strong>eben</strong> so. (that’s just how it is)</p>
-                <p>Das ist <strong>halt</strong> so. (resigned / casual “just”) </p>
-                <p>Er kommt <strong>wohl</strong> später. (probably)</p>
-              </div>
-            </details>
-          </div>
-        </section>
-
-        <!-- ====================== C2 ====================== -->
-        <section id="c2" class="grammar-section">
-          <h3><span class="tag c2">C2</span> Mastery</h3>
-          <p>Near-native control: stylistic flexibility, idiomatic structures, precision, and subtle register shifts.</p>
-
-          <div class="subsection">
-            <h4>1) Register & Style Control <span class="tag c2">C2</span></h4>
-            <p>
-              At C2 you can switch smoothly between informal spoken German, neutral standard German, and formal/academic prose.
-              Grammar choices change with register.
-            </p>
-            <div class="example-box">
-              <p><strong>Informal:</strong> Ich hab’s dir doch gesagt.</p>
-              <p><strong>Neutral:</strong> Ich habe es dir gesagt.</p>
-              <p><strong>Formal:</strong> Ich wies Sie bereits darauf hin.</p>
-            </div>
-
-            <details>
-              <summary>Common C2-level stylistic tools</summary>
-              <ul>
-                <li><strong>Ellipsis</strong> in dialogue: „Schon fertig?“</li>
-                <li><strong>Nominalization</strong> where appropriate, but not overused</li>
-                <li><strong>Varying clause length</strong> for rhythm and clarity</li>
-                <li><strong>Precise connectors</strong>: gleichwohl, insofern, mithin, demnach</li>
-              </ul>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>2) Complex Concession & Contrast <span class="tag c2">C2</span></h4>
-            <p>
-              Beyond “obwohl/trotzdem”, C2 includes nuanced forms that encode stance and logic precisely.
-            </p>
-            <div class="example-box">
-              <p><strong>Wenngleich</strong> der Ansatz überzeugend ist, bleiben Fragen offen.</p>
-              <p>Er ist kompetent, <strong>gleichwohl</strong> nicht immer zuverlässig.</p>
-              <p><strong>So sehr</strong> ich den Plan verstehe, <strong>so</strong> riskant ist er.</p>
-            </div>
-
-            <details>
-              <summary>Subtle meaning differences</summary>
-              <ul>
-                <li><strong>obwohl</strong>: simple concession</li>
-                <li><strong>während</strong>: can be “while” or contrast “whereas” (writing)</li>
-                <li><strong>hingegen/dagegen</strong>: stronger, explicit contrast</li>
-              </ul>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>3) Advanced Word Formation & Precision <span class="tag c2">C2</span></h4>
-            <p>
-              German uses compounds, prefixes, and derived nouns to create precision. Mastery includes choosing the best option.
-            </p>
-            <div class="example-box">
-              <p>Datenschutz<strong>grund</strong>verordnung (compound noun)</p>
-              <p>un- / miss- / über-: <em>unklar, missverstehen, übertreiben</em></p>
-              <p>-bar / -lich / -fähig: <em>essbar, verständlich, belastungsfähig</em></p>
-            </div>
-
-            <details>
-              <summary>Precision: choosing verbs over “machen/tun”</summary>
-              <div class="example-box">
-                <p>statt „eine Pause machen“ → „eine Pause <strong>einlegen</strong>“</p>
-                <p>statt „einen Fehler machen“ → „einen Fehler <strong>begehen</strong>“</p>
-                <p>statt „ein Gespräch machen“ → „ein Gespräch <strong>führen</strong>“</p>
-              </div>
-            </details>
-          </div>
-
-          <div class="subsection">
-            <h4>4) Idiomatic Structures & Fixed Patterns <span class="tag c2">C2</span></h4>
-            <p>
-              Many advanced structures are not “hard grammar” but fixed patterns you use fluently:
-              <em>je … desto</em>, <em>es sei denn</em>, <em>geschweige denn</em>, <em>nicht nur … sondern auch</em>.
-            </p>
-            <div class="example-box">
-              <p><strong>Je</strong> mehr ich lerne, <strong>desto</strong> besser werde ich.</p>
-              <p>Ich komme, <strong>es sei denn</strong>, ich bin krank.</p>
-              <p>Er hat es nicht erklärt, <strong>geschweige denn</strong> bewiesen.</p>
-              <p><strong>Nicht nur</strong> ist er pünktlich, <strong>sondern</strong> auch sehr zuverlässig.</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- ====================== REFERENCE TABLES ====================== -->
-        <section id="reference" class="grammar-section">
-          <h3>Reference Tables</h3>
-          <p>Fast look-up for cases, pronouns, and key verb forms.</p>
-
-          <div class="subsection">
-            <h4>1) Definite Articles (All Cases)</h4>
-            <table class="grammar-table">
-              <tr><th>Case</th><th>Masculine</th><th>Feminine</th><th>Neuter</th><th>Plural</th></tr>
-              <tr><td>Nominative</td><td>der</td><td>die</td><td>das</td><td>die</td></tr>
-              <tr><td>Accusative</td><td>den</td><td>die</td><td>das</td><td>die</td></tr>
-              <tr><td>Dative</td><td>dem</td><td>der</td><td>dem</td><td>den (+n)</td></tr>
-              <tr><td>Genitive</td><td>des (+s/es)</td><td>der</td><td>des (+s/es)</td><td>der</td></tr>
-            </table>
-          </div>
-
-          <div class="subsection">
-            <h4>2) Personal Pronouns (All Cases)</h4>
-            <table class="grammar-table">
-              <tr><th></th><th>Nominative</th><th>Accusative</th><th>Dative</th><th>Genitive (rare)</th></tr>
-              <tr><td>1st sg</td><td>ich</td><td>mich</td><td>mir</td><td>meiner</td></tr>
-              <tr><td>2nd sg</td><td>du</td><td>dich</td><td>dir</td><td>deiner</td></tr>
-              <tr><td>3rd sg m</td><td>er</td><td>ihn</td><td>ihm</td><td>seiner</td></tr>
-              <tr><td>3rd sg f</td><td>sie</td><td>sie</td><td>ihr</td><td>ihrer</td></tr>
-              <tr><td>3rd sg n</td><td>es</td><td>es</td><td>ihm</td><td>seiner</td></tr>
-              <tr><td>1st pl</td><td>wir</td><td>uns</td><td>uns</td><td>unser</td></tr>
-              <tr><td>2nd pl</td><td>ihr</td><td>euch</td><td>euch</td><td>euer</td></tr>
-              <tr><td>3rd pl</td><td>sie</td><td>sie</td><td>ihnen</td><td>ihrer</td></tr>
-              <tr><td>formal</td><td>Sie</td><td>Sie</td><td>Ihnen</td><td>Ihrer</td></tr>
-            </table>
-          </div>
-
-          <div class="subsection">
-            <h4>3) Verb Tenses Overview</h4>
-            <div class="example-box">
-              <p><strong>Präsens:</strong> Ich gehe.</p>
-              <p><strong>Perfekt:</strong> Ich bin gegangen. / Ich habe gelernt.</p>
-              <p><strong>Präteritum:</strong> Ich ging. / Ich lernte.</p>
-              <p><strong>Plusquamperfekt:</strong> Ich war gegangen. / Ich hatte gelernt. <span class="tag b2">B2</span></p>
-              <p><strong>Futur I:</strong> Ich werde gehen. <span class="tag a2">A2</span></p>
-              <p><strong>Futur II:</strong> Ich werde gegangen sein / gelernt haben. <span class="tag c1">C1</span></p>
-            </div>
-            <details>
-              <summary>When to use which past tense</summary>
-              <ul>
-                <li><strong>Perfekt</strong>: everyday speech, spoken narratives</li>
-                <li><strong>Präteritum</strong>: written stories, reports; also common spoken with sein/haben/werden</li>
-                <li><strong>Plusquamperfekt</strong>: “past of the past” (sequence of events)</li>
-              </ul>
-            </details>
-          </div>
-        </section>
-
-        <!-- ====================== TROUBLESHOOTING ====================== -->
-        <section id="troubleshooting" class="grammar-section">
-          <h3>Common Mistakes & How to Fix Them</h3>
-
-          <div class="subsection">
-            <h4>1) V2 mistakes</h4>
-            <div class="example-box">
-              <p><strong>Wrong:</strong> Heute ich gehe ins Kino.</p>
-              <p><strong>Right:</strong> Heute <strong>gehe</strong> ich ins Kino.</p>
-            </div>
-          </div>
-
-          <div class="subsection">
-            <h4>2) Confusing “nicht” and “kein”</h4>
-            <div class="example-box">
-              <p><strong>kein</strong> + noun: Ich habe <strong>kein</strong> Geld.</p>
-              <p><strong>nicht</strong> + verb/phrase: Ich komme <strong>nicht</strong>. / Das ist <strong>nicht</strong> gut.</p>
-            </div>
-          </div>
-
-          <div class="subsection">
-            <h4>3) Dative after certain verbs/prepositions</h4>
-            <div class="example-box">
-              <p><strong>Wrong:</strong> Ich helfe den Mann.</p>
-              <p><strong>Right:</strong> Ich helfe <strong>dem</strong> Mann.</p>
-              <p><strong>Wrong:</strong> mit den Bus</p>
-              <p><strong>Right:</strong> mit <strong>dem</strong> Bus</p>
-            </div>
-          </div>
-
-          <div class="subsection">
-            <h4>4) Two-way prepositions: Dat vs Akk</h4>
-            <div class="example-box">
-              <p><strong>Location (Dat):</strong> Ich bin <strong>im</strong> Park.</p>
-              <p><strong>Direction (Akk):</strong> Ich gehe <strong>in den</strong> Park.</p>
-            </div>
-          </div>
-
-          <div class="subsection">
-            <h4>5) Subordinate clause verb position</h4>
-            <div class="example-box">
-              <p><strong>Wrong:</strong> Ich bleibe zu Hause, weil ich bin krank.</p>
-              <p><strong>Right:</strong> Ich bleibe zu Hause, weil ich krank <strong>bin</strong>.</p>
-            </div>
-          </div>
-
-          <section class="grammar-section quick-reference">
-            <h3>Quick Reference Card</h3>
-            <div class="reference-grid">
-              <div class="reference-card">
-                <h4>🎯 Core Rules</h4>
-                <ul>
-                  <li>Main clause: conjugated verb in <strong>position 2</strong></li>
-                  <li>Yes/No question: verb in <strong>position 1</strong></li>
-                  <li>Subordinate clause: conjugated verb at the <strong>end</strong></li>
-                  <li>Perfekt: auxiliary + participle at the <strong>end</strong></li>
-                </ul>
-              </div>
-
-              <div class="reference-card">
-                <h4>📚 Study Strategy</h4>
-                <ul>
-                  <li>Learn nouns with <strong>article + plural</strong></li>
-                  <li>Learn verbs with required <strong>case/preposition</strong></li>
-                  <li>Practice word order with short “building block” sentences</li>
-                  <li>Upgrade connectors: weil → da; aber → jedoch; trotzdem → gleichwohl</li>
-                </ul>
-              </div>
-            </div>
-          </section>
-        </section>
-
       </div>
     </div>
   </main>
@@ -998,5 +707,111 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    (function(){
+      const app = document.getElementById('grammarApp');
+      const grid = document.getElementById('topicGrid');
+      const topics = Array.from(document.querySelectorAll('.topic'));
+      const searchBox = document.getElementById('searchBox');
+      const levelSelect = document.getElementById('levelSelect');
+      const levelPills = document.getElementById('levelPills');
+      const topicLinks = document.getElementById('topicLinks');
+      const emptyState = document.getElementById('emptyState');
+
+      const toggleExamples = document.getElementById('toggleExamples');
+      const toggleDetails = document.getElementById('toggleDetails');
+      const resetBtn = document.getElementById('resetBtn');
+
+      const levels = ["A1","A2","B1","B2","C1","C2"];
+      const levelRank = (lvl) => lvl === "ALL" ? -1 : levels.indexOf(lvl);
+
+      function buildSidebarLinks(){
+        // Build a simple list of currently visible topics (updated after filtering)
+        const visible = topics.filter(t => !t.hidden);
+        topicLinks.innerHTML = visible.length
+          ? visible.map(t => {
+              const title = t.querySelector('.topic-title')?.textContent?.trim() || "Topic";
+              const lvl = t.dataset.level || "";
+              return `<a href="#${t.id}"><span class="muted">${lvl}</span> — ${title}</a>`;
+            }).join('')
+          : `<div class="muted" style="padding:.35rem .5rem;">No topics to show.</div>`;
+      }
+
+      function setActivePill(level){
+        Array.from(levelPills.querySelectorAll('.pill')).forEach(p => {
+          p.classList.toggle('active', p.dataset.level === level);
+        });
+      }
+
+      function applyFilters(){
+        const q = (searchBox.value || "").trim().toLowerCase();
+        const lvl = levelSelect.value;
+
+        const minRank = levelRank(lvl);
+
+        let shown = 0;
+        topics.forEach(t => {
+          const tLevel = t.dataset.level || "A1";
+          const tRank = levelRank(tLevel);
+          const text = (
+            (t.querySelector('.topic-title')?.textContent || "") + " " +
+            (t.querySelector('.topic-summary')?.textContent || "") + " " +
+            (t.dataset.tags || "")
+          ).toLowerCase();
+
+          const matchesLevel = (lvl === "ALL") ? true : (tRank >= minRank);
+          const matchesSearch = q ? text.includes(q) : true;
+
+          const show = matchesLevel && matchesSearch;
+          t.hidden = !show;
+          if (show) shown++;
+        });
+
+        emptyState.style.display = shown ? "none" : "block";
+        buildSidebarLinks();
+      }
+
+      // Pills click => update select + filter
+      levelPills.addEventListener('click', (e) => {
+        const pill = e.target.closest('.pill');
+        if(!pill) return;
+        const lvl = pill.dataset.level;
+        levelSelect.value = lvl;
+        setActivePill(lvl);
+        applyFilters();
+      });
+
+      // Select change => update pills + filter
+      levelSelect.addEventListener('change', () => {
+        setActivePill(levelSelect.value);
+        applyFilters();
+      });
+
+      // Search
+      searchBox.addEventListener('input', applyFilters);
+
+      // Toggles: hide/show examples/deep dives
+      toggleExamples.addEventListener('change', () => {
+        app.classList.toggle('hide-examples', toggleExamples.checked);
+      });
+      toggleDetails.addEventListener('change', () => {
+        app.classList.toggle('hide-details', toggleDetails.checked);
+      });
+
+      resetBtn.addEventListener('click', () => {
+        searchBox.value = "";
+        levelSelect.value = "ALL";
+        setActivePill("ALL");
+        toggleExamples.checked = false;
+        toggleDetails.checked = false;
+        app.classList.remove('hide-examples','hide-details');
+        applyFilters();
+      });
+
+      // Initial
+      applyFilters();
+    })();
+  </script>
 </body>
 </html>
