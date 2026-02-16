@@ -1,4 +1,4 @@
-// nouns.js - Study-mode logic for German nouns (1 word per view)
+// nouns.js - Study mode (1 noun at a time)
 import nounsA1 from './js/nouns-db-a1.js';
 import { initStudyMode } from './study-mode.js';
 
@@ -69,17 +69,15 @@ function filterNouns(level, query) {
 }
 
 function renderCurrent(query = '') {
-  const nouns = filterNouns(currentLevel, query);
-
-  // Optional: keep your old count label updated
-  nounCount.textContent = `${nouns.length} ${nouns.length === 1 ? 'noun' : 'nouns'}`;
-
-  // If nothing found, show a small message inside study-root
   const root = document.getElementById('study-root');
   if (!root) {
-    console.error('Missing #study-root in nouns.html. Replace #nouns-list with #study-root.');
+    console.error('Missing #study-root in nouns.html');
     return;
   }
+
+  const nouns = filterNouns(currentLevel, query);
+
+  nounCount.textContent = `${nouns.length} ${nouns.length === 1 ? 'noun' : 'nouns'}`;
 
   if (nouns.length === 0) {
     root.innerHTML = `
@@ -90,51 +88,50 @@ function renderCurrent(query = '') {
     return;
   }
 
-  // ✅ This replaces the old "render many cards" logic:
+  // ✅ One-word study view
   initStudyMode({
     rootId: 'study-root',
     items: nouns,
     level: currentLevel,
     storageKey: 'nouns',
 
-    // Unique id for learned/unlearned storage:
-    getId: (item) => item.word, // word includes article (e.g. "der Hund") — good unique key
+    // Use full "der Hund" etc. as ID so it’s unique and stable
+    getId: (item) => item.word,
 
-    // What appears big on the card:
-    getFront: (item) => formatNounFront(item),  // e.g. "der Hund"
+    // Big text at the top
+    getFront: (item) => formatNounFront(item),
 
-    // What appears as translation:
+    // Translation line
     getBack: (item) => (item.translations || []).join(', '),
 
-    // Extra section (plural/genitive/examples):
+    // Extra details (kept short for focus)
     getExtra: (item) => formatNounExtra(item)
   });
 }
 
 function formatNounFront(noun) {
-  // Show the noun with article badge-style text baked in
-  // Example noun.word might already be "der Hund"
-  // If it's just "Hund", we'll add the article.
   const article =
     noun.gender === 'm' ? 'der' :
     noun.gender === 'f' ? 'die' :
     noun.gender === 'n' ? 'das' : '';
 
-  const hasArticle = typeof noun.word === 'string' && noun.word.split(' ').length > 1;
   const word = noun.word || '—';
 
+  // If noun.word already contains an article, keep it
+  const hasArticle = typeof word === 'string' && word.split(' ').length > 1;
   return hasArticle || !article ? word : `${article} ${word}`;
 }
 
 function formatNounExtra(noun) {
   const plural = noun.plural ? `Plural: ${noun.plural}` : '';
   const genitive = noun.genitive ? `Genitive: ${noun.genitive}` : '';
-  const examples = (noun.examples || []).slice(0, 2); // keep it focused
 
-  const parts = [plural, genitive].filter(Boolean).join(' • ');
+  // keep examples short & focused
+  const examples = (noun.examples || []).slice(0, 2);
   const exText = examples.length ? `Examples: ${examples.join(' | ')}` : '';
 
-  return [parts, exText].filter(Boolean).join('\n');
+  const line1 = [plural, genitive].filter(Boolean).join(' • ');
+  return [line1, exText].filter(Boolean).join('\n');
 }
 
 function updateCounts() {
@@ -144,7 +141,7 @@ function updateCounts() {
   });
 }
 
-// Keyboard shortcuts (keep your old ones)
+// Keyboard shortcuts (keeps yours)
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
     e.preventDefault();
