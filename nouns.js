@@ -153,7 +153,15 @@ function createNounCard(noun) {
         <div class="verb-base">${escapeHtml(baseWord)}</div>
         <div class="reflexive-marker">${escapeHtml(genderText ? `Gender: ${genderText}` : '')}</div>
       </div>
+    
+      <button class="save-btn"
+              type="button"
+              data-save-id="${escapeHtml(saveId)}"
+              aria-label="Save">
+        ${isInitiallySaved ? '♥' : '♡'}
+      </button>
     </div>
+
 
     <div class="verb-forms">
       <div class="form-item">
@@ -184,6 +192,18 @@ function createNounCard(noun) {
         : ''
     }
   `;
+  const btn = card.querySelector('.save-btn');
+    if (btn) {
+      setSaveBtnState(btn, getSaved().has(saveId));
+    
+      btn.addEventListener('click', () => {
+        const s = getSaved();
+        if (s.has(saveId)) s.delete(saveId);
+        else s.add(saveId);
+        setSaved(s);
+        setSaveBtnState(btn, s.has(saveId));
+      });
+    }
 
   return card;
 }
