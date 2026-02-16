@@ -45,23 +45,30 @@ levelBtns.forEach(btn => {
     btn.classList.add('active');
 
     currentLevel = btn.dataset.level;
-    searchInput.value = '';
-    clearSearchBtn.style.display = 'none';
+    if (searchInput) searchInput.value = '';
+    if (clearSearchBtn) clearSearchBtn.style.display = 'none';
+
     renderCurrent();
   });
 });
 
-searchInput.addEventListener('input', (e) => {
-  const query = e.target.value.trim().toLowerCase();
-  clearSearchBtn.style.display = query ? 'block' : 'none';
-  renderCurrent(query);
-});
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.trim().toLowerCase();
+    if (clearSearchBtn) clearSearchBtn.style.display = query ? 'block' : 'none';
+    renderCurrent(query);
+  });
+}
 
-clearSearchBtn.addEventListener('click', () => {
-  searchInput.value = '';
-  searchInput.dispatchEvent(new Event('input'));
-  searchInput.focus();
-});
+if (clearSearchBtn) {
+  clearSearchBtn.addEventListener('click', () => {
+    if (!searchInput) return;
+    searchInput.value = '';
+    searchInput.dispatchEvent(new Event('input'));
+    searchInput.focus();
+  });
+}
+
 
 function renderCurrent(query = '') {
   const rootId = 'verbs-list';
@@ -76,7 +83,10 @@ function renderCurrent(query = '') {
 
   const list = filterVerbs(currentLevel, query);
 
-  verbCount.textContent = `${list.length} ${list.length === 1 ? 'verb' : 'verbs'}`;
+  if (verbCount) {
+    verbCount.textContent = `${list.length} ${list.length === 1 ? 'verb' : 'verbs'}`;
+  }
+
 
   if (list.length === 0) {
     root.innerHTML = `
@@ -487,14 +497,18 @@ function updateCounts() {
 
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+    // Only hijack Ctrl/Cmd+F if we actually have a search box
+    if (!searchInput) return;
     e.preventDefault();
     searchInput.focus();
   }
-  if (e.key === 'Escape' && searchInput.value) {
+
+  if (e.key === 'Escape' && searchInput && searchInput.value) {
     searchInput.value = '';
     searchInput.dispatchEvent(new Event('input'));
   }
 });
+
 
 function escapeHtml(s) {
   return String(s ?? '')
