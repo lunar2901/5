@@ -1,6 +1,6 @@
-// nouns.js - Study mode (1 noun at a time)
+// nouns.js - Focus mode (1 noun at a time + accordion lists)
 import nounsA1 from './js/nouns-db-a1.js';
-import { initStudyMode } from './study-mode.js';
+import { initFocusMode } from './focus-mode.js';
 
 const nounsDB = {
   a1: nounsA1,
@@ -75,6 +75,9 @@ function renderCurrent(query = '') {
     return;
   }
 
+  // helps CSS override to single-column
+  root.classList.add('study-root');
+
   const nouns = filterNouns(currentLevel, query);
 
   nounCount.textContent = `${nouns.length} ${nouns.length === 1 ? 'noun' : 'nouns'}`;
@@ -88,50 +91,82 @@ function renderCurrent(query = '') {
     return;
   }
 
-  // ✅ One-word study view
-  initStudyMode({
+  // ✅ Focus mode (accordion + single card)
+  initFocusMode({
     rootId: 'study-root',
     items: nouns,
     level: currentLevel,
     storageKey: 'nouns',
 
-    // Use full "der Hund" etc. as ID so it’s unique and stable
-    getId: (item) => item.word,
-
-    // Big text at the top
-    getFront: (item) => formatNounFront(item),
-
-    // Translation line
-    getBack: (item) => (item.translations || []).join(', '),
-
-    // Extra details (kept short for focus)
-    getExtra: (item) => formatNounExtra(item)
+    getId: (n) => n.word,
+    getLabel: (n) => formatNounLabel(n),      // shows in Learned/Not learned lists
+    renderCard: (n) => createNounCard(n)      // your detailed card UI
   });
 }
 
-function formatNounFront(noun) {
+function formatNounLabel(noun) {
+  // label inside accordion list
   const article =
     noun.gender === 'm' ? 'der' :
     noun.gender === 'f' ? 'die' :
     noun.gender === 'n' ? 'das' : '';
 
   const word = noun.word || '—';
-
-  // If noun.word already contains an article, keep it
   const hasArticle = typeof word === 'string' && word.split(' ').length > 1;
   return hasArticle || !article ? word : `${article} ${word}`;
 }
 
-function formatNounExtra(noun) {
-  const plural = noun.plural ? `Plural: ${noun.plural}` : '';
-  const genitive = noun.genitive ? `Genitive: ${noun.genitive}` : '';
+// ✅ noun card (single item). Uses your existing CSS classes form-item/label/value etc.
+function createNounCard(noun) {
+  const card = document.createElement('div');
+  card.className = 'verb-card'; // reuse verb-card styling so it matches your theme
 
-  // keep examples short & focused
-  const examples = (noun.examples || []).slice(0, 2);
-  const exText = examples.length ? `Examples: ${examples.join(' | ')}` : '';
+  const genderText =
+    noun.gender === 'm' ? 'der' :
+    noun.gender === 'f' ? 'die' :
+    noun.gender === 'n' ? 'das' : '';
 
-  const line1 = [plural, genitive].filter(Boolean).join(' • ');
-  return [line1, exText].filter(Boolean).join('\n');
+  const baseWord = formatNounLabel(noun);
+
+  card.innerHTML = `
+    <div class="verb-header">
+      <div>
+        <div class="verb-base">${escapeHtml(baseWord)}</div>
+        <div class="reflexive-marker">${escapeHtml(genderText ? `Gender: ${genderText}` : '')}</div>
+      </div>
+    </div>
+
+    <div class="verb-forms">
+      <div class="form-item">
+        <span class="form-label">Plural</span>
+        <span class="form-value">${escapeHtml(noun.plural || '—')}</span>
+      </div>
+      <div class="form-item">
+        <span class="form-label">Genitive</span>
+        <span class="form-value">${escapeHtml(noun.genitive || '—')}</span>
+      </div>
+    </div>
+
+    <div class="verb-info">
+      <span class="label">Translation:</span>
+      <span class="value">${escapeHtml((noun.translations || []).join(', ') || '—')}</span>
+    </div>
+
+    ${
+      (noun.examples || []).length
+        ? `
+          <div class="examples-section">
+            <h4>Examples</h4>
+            <ul class="examples-list">
+              ${(noun.examples || []).slice(0, 4).map(ex => `<li>${escapeHtml(ex)}</li>`).join('')}
+            </ul>
+          </div>
+        `
+        : ''
+    }
+  `;
+
+  return card;
 }
 
 function updateCounts() {
@@ -141,7 +176,7 @@ function updateCounts() {
   });
 }
 
-// Keyboard shortcuts (keeps yours)
+// Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
     e.preventDefault();
