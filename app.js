@@ -21,6 +21,20 @@ const verbCount = document.getElementById('verb-count');
 const clearSearchBtn = document.getElementById('clear-search');
 
 let currentLevel = 'a1';
+// ===== Saved words (localStorage) =====
+const SAVED_KEY = 'savedWordsV1';
+const getSaved = () => new Set(JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'));
+const setSaved = (set) => localStorage.setItem(SAVED_KEY, JSON.stringify([...set]));
+
+function setSaveBtnState(btn, isSaved) {
+  btn.textContent = isSaved ? '♥' : '♡';
+  btn.classList.toggle('saved', isSaved);
+}
+
+function makeSaveId(category, level, base, idx) {
+  return `${category}:${level}:${base}::${idx}`;
+}
+
 
 renderCurrent();
 updateCounts();
@@ -81,7 +95,7 @@ function renderCurrent(query = '') {
 
     getId: (v, idx) => `${getVerbBase(v)}::${idx}`, // stable enough even if duplicates
     getLabel: (v) => getVerbBase(v),
-    renderCard: (v) => createVerbCard(v)
+    renderCard: (v, idx) => createVerbCard(v, idx)
   });
 }
 
@@ -343,11 +357,12 @@ function isNonEmptyString(x) {
    Card renderer
    ========================= */
 
-function createVerbCard(v) {
+function createVerbCard(v, idx) {
   const card = document.createElement('div');
   card.className = 'verb-card';
 
   const base = getVerbBase(v);
+  const saveId = makeSaveId('verbs', currentLevel, base, idx);
   const typeText = getTypeText(v);
   const forms = getForms(v);
   const translations = getTranslations(v);
@@ -368,7 +383,12 @@ function createVerbCard(v) {
         <div class="verb-base">${escapeHtml(base)}</div>
         ${typeText ? `<div class="reflexive-marker">${escapeHtml(typeText)}</div>` : ''}
       </div>
+    
+      <button class="save-btn" type="button" data-save-id="${escapeHtml(saveId)}" aria-label="Save">
+        ♡
+      </button>
     </div>
+
 
     ${conjLine ? `
       <div class="verb-info conjugation">
@@ -438,7 +458,19 @@ function createVerbCard(v) {
       </div>
     ` : ''}
   `;
-
+  const btn = card.querySelector('.save-btn');
+    if (btn) {
+      const saved = getSaved();
+      setSaveBtnState(btn, saved.has(saveId));
+    
+      btn.addEventListener('click', () => {
+        const s = getSaved();
+        if (s.has(saveId)) s.delete(saveId);
+        else s.add(saveId);
+        setSaved(s);
+        setSaveBtnState(btn, s.has(saveId));
+      });
+    }
   return card;
 }
 
