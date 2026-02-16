@@ -107,68 +107,167 @@ function createVerbCard(v) {
   const card = document.createElement('div');
   card.className = 'verb-card';
 
-  const base = getVerbBase(v);
+  // --- Base / title ---
+  const base =
+    v.base ||
+    v.infinitive ||
+    v.verb ||
+    v.word ||
+    v.lemma ||
+    v.name ||
+    '—';
 
-  // Try common field names (so it works even if your DB schema varies)
-  const present = v.present || v.prasens || v.presens || v.ich || v.form1 || '—';
-  const past = v.past || v.prateritum || v.präteritum || v.simplePast || '—';
-  const partizip2 = v.partizip2 || v.participle || v.pp || v.perfectParticiple || '—';
+  // --- Type badge (optional) ---
+  const typeText =
+    v.type ||
+    v.verbType ||
+    v.class ||
+    (v.strong ? 'strong' : '') ||
+    (v.irregular ? 'irregular' : '');
 
-  const translations = (v.translations || []).join(', ') || '—';
+  // --- Conjugation / forms ---
+  const present =
+    v.present || v.prasens || v.präsens || v.presens || v.ich || v.form_present || '—';
 
-  const isReflexive = !!v.reflexive || String(base).toLowerCase().startsWith('sich ');
-  const reflexiveTag = isReflexive ? `<span class="reflexive-marker">reflexive</span>` : '';
+  const past =
+    v.past || v.prateritum || v.präteritum || v.simplePast || v.form_past || '—';
 
-  // Preposition(s)
-  const prep = v.preposition
-    ? `<span class="prep-badge">${escapeHtml(v.preposition)}</span>`
+  const partizip2 =
+    v.partizip2 || v.partizipII || v.participle || v.pp || v.form_partizip2 || '—';
+
+  // Some DBs store one combined string like: "spricht, sprach, hat gesprochen"
+  const conjugationLine =
+    v.conjugationLine ||
+    v.conjugation ||
+    v.forms ||
+    v.principalParts ||
+    '';
+
+  const conjugationText = normalizeConjugation(conjugationLine, present, past, partizip2);
+
+  // --- Translations / meanings ---
+  const translations =
+    Array.isArray(v.translations) ? v.translations :
+    Array.isArray(v.meanings) ? v.meanings :
+    Array.isArray(v.translation) ? v.translation :
+    typeof v.translation === 'string' ? [v.translation] :
+    typeof v.meaning === 'string' ? [v.meaning] :
+    [];
+
+  // --- Examples ---
+  const examples =
+    Array.isArray(v.examples) ? v.examples :
+    Array.isArray(v.sentences) ? v.sentences :
+    Array.isArray(v.example) ? v.example :
+    typeof v.example === 'string' ? [v.example] :
+    [];
+
+  // --- Variants ---
+  const variants =
+    Array.isArray(v.variants) ? v.variants :
+    Array.isArray(v.variant) ? v.variant :
+    Array.isArray(v.alternatives) ? v.alternatives :
+    [];
+
+  // --- Preposition(s) ---
+  const preps =
+    v.prepositions ||
+    v.preposition ||
+    v.prep ||
+    '';
+
+  const prepHtml = preps
+    ? `<span class="prep-badge">${escapeHtml(String(preps))}</span>`
     : '';
 
   card.innerHTML = `
     <div class="verb-header">
       <div>
-        <div class="verb-base">${escapeHtml(base)} ${reflexiveTag}</div>
+        <div class="verb-base">${escapeHtml(String(base))}</div>
+        ${typeText ? `<div class="reflexive-marker">${escapeHtml(String(typeText))}</div>` : ''}
       </div>
     </div>
+
+    ${
+      conjugationText
+        ? `
+          <div class="verb-info conjugation">
+            <span class="label">Conjugation:</span>
+            <span class="value">${escapeHtml(conjugationText)}</span>
+          </div>
+        `
+        : ''
+    }
 
     <div class="verb-forms">
       <div class="form-item">
         <span class="form-label">Present</span>
-        <span class="form-value">${escapeHtml(present)}</span>
+        <span class="form-value">${escapeHtml(String(present))}</span>
       </div>
       <div class="form-item">
         <span class="form-label">Past</span>
-        <span class="form-value">${escapeHtml(past)}</span>
+        <span class="form-value">${escapeHtml(String(past))}</span>
       </div>
       <div class="form-item" style="grid-column: 1 / -1;">
         <span class="form-label">Partizip II</span>
-        <span class="form-value">${escapeHtml(partizip2)}</span>
+        <span class="form-value">${escapeHtml(String(partizip2))}</span>
       </div>
     </div>
 
-    <div class="verb-info">
-      <span class="label">Translation:</span>
-      <span class="value">${escapeHtml(translations)}</span>
-    </div>
-
     ${
-      prep
+      translations.length
         ? `
           <div class="verb-info">
-            <span class="label">Prep:</span>
-            <span class="value">${prep}</span>
+            <span class="label">Translation:</span>
+            <span class="value">${escapeHtml(translations.join(', '))}</span>
           </div>
         `
         : ''
     }
 
     ${
-      (v.examples || []).length
+      prepHtml
+        ? `
+          <div class="verb-info">
+            <span class="label">Prep:</span>
+            <span class="value">${prepHtml}</span>
+          </div>
+        `
+        : ''
+    }
+
+    ${
+      variants.length
+        ? `
+          <div class="variants-section">
+            <h4>Variants</h4>
+            <ul class="variants-list">
+              ${variants.map(vr => {
+                if (typeof vr === 'string') return `<li>${escapeHtml(vr)}</li>`;
+                const txt = vr.text || vr.name || vr.variant || JSON.stringify(vr);
+                const ex = vr.example || vr.sentence || '';
+                const prep = vr.preps || vr.preposition || '';
+                return `
+                  <li>
+                    ${escapeHtml(txt)}
+                    ${prep ? `<div class="variant-preps">${escapeHtml(String(prep))}</div>` : ''}
+                    ${ex ? `<div class="variant-example">${escapeHtml(String(ex))}</div>` : ''}
+                  </li>
+                `;
+              }).join('')}
+            </ul>
+          </div>
+        `
+        : ''
+    }
+
+    ${
+      examples.length
         ? `
           <div class="examples-section">
             <h4>Examples</h4>
             <ul class="examples-list">
-              ${(v.examples || []).slice(0, 4).map(ex => `<li>${escapeHtml(ex)}</li>`).join('')}
+              ${examples.slice(0, 4).map(ex => `<li>${escapeHtml(String(ex))}</li>`).join('')}
             </ul>
           </div>
         `
@@ -178,6 +277,22 @@ function createVerbCard(v) {
 
   return card;
 }
+
+function normalizeConjugation(line, present, past, partizip2) {
+  // If line is object -> stringify nicely
+  if (line && typeof line === 'object') {
+    try { return JSON.stringify(line); } catch { return ''; }
+  }
+
+  const s = String(line || '').trim();
+  if (s) return s;
+
+  // If we have parts, build a simple line
+  const parts = [present, past, partizip2].map(x => String(x || '').trim()).filter(x => x && x !== '—');
+  if (!parts.length) return '';
+  return parts.join(', ');
+}
+
 
 function updateCounts() {
   Object.keys(verbsDB).forEach(level => {
