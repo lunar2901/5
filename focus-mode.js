@@ -23,8 +23,8 @@ export function initFocusMode({
   const learnedSet = new Set(JSON.parse(localStorage.getItem(keyLearned) || "[]"));
   let index = clamp(parseInt(localStorage.getItem(keyIndex) || "0", 10), 0, Math.max(items.length - 1, 0));
 
-  let hideWords = localStorage.getItem(keyHide) === "1"; // default false
-  let openPanel = localStorage.getItem(keyOpen) || "";   // default closed
+  let hideWords = localStorage.getItem(keyHide) === "1";
+  let openPanel = localStorage.getItem(keyOpen) || "";
 
   function save() {
     localStorage.setItem(keyLearned, JSON.stringify([...learnedSet]));
@@ -43,10 +43,47 @@ export function initFocusMode({
     render();
   }
 
-  function markLearned() {
+  function findNextUnlearned(fromIndex) {
+    if (!items.length) return 0;
+    for (let i = fromIndex + 1; i < items.length; i++) {
+      if (!isLearned(items[i], i)) return i;
+    }
+    // wrap
+    for (let i = 0; i <= fromIndex; i++) {
+      if (!isLearned(items[i], i)) return i;
+    }
+    return fromIndex; // all learned
+  }
+
+  function findPrevUnlearned(fromIndex) {
+    if (!items.length) return 0;
+    for (let i = fromIndex - 1; i >= 0; i--) {
+      if (!isLearned(items[i], i)) return i;
+    }
+    // wrap
+    for (let i = items.length - 1; i >= fromIndex; i--) {
+      if (!isLearned(items[i], i)) return i;
+    }
+    return fromIndex;
+  }
+
+  function next() {
+    // Move forward (prefer next unlearned)
+    const nextIdx = findNextUnlearned(index);
+    jumpTo(nextIdx === index ? Math.min(index + 1, items.length - 1) : nextIdx);
+  }
+
+  function prev() {
+    const prevIdx = findPrevUnlearned(index);
+    jumpTo(prevIdx === index ? Math.max(index - 1, 0) : prevIdx);
+  }
+
+  function markLearnedAndNext() {
     learnedSet.add(getId(items[index], index));
     save();
-    render();
+    // auto go to next unlearned
+    const nextIdx = findNextUnlearned(index);
+    jumpTo(nextIdx);
   }
 
   function markUnlearned() {
@@ -57,14 +94,13 @@ export function initFocusMode({
 
   function toggleHide() {
     hideWords = !hideWords;
-    // when hiding, also close panels
     if (hideWords) openPanel = "";
     save();
     render();
   }
 
   function togglePanel(name) {
-    if (hideWords) return; // disabled when hidden
+    if (hideWords) return;
     openPanel = openPanel === name ? "" : name;
     save();
     render();
@@ -124,16 +160,18 @@ export function initFocusMode({
 
       <section class="word-toolbar">
         <div class="word-meta">
-          <span class="word-level">${level.toUpperCase()}</span>
+          <span class="word-level">${String(level).toUpperCase()}</span>
           <span class="word-count">${index + 1} / ${items.length}</span>
           <span class="word-stats">${learnedCount} learned • ${unlearnedCount} not learned</span>
         </div>
 
         <div class="word-actions">
+          <button type="button" class="word-btn" data-action="prev">← Prev</button>
+          <button type="button" class="word-btn" data-action="next">Next →</button>
           ${
             currentLearned
-              ? `<button type="button" class="word-btn" data-action="unlearn">Mark Unlearned</button>`
-              : `<button type="button" class="word-btn primary" data-action="learn">Mark Learned</button>`
+              ? `<button type="button" class="word-btn" data-action="unlearn">Unlearn</button>`
+              : `<button type="button" class="word-btn primary" data-action="learnNext">Learned ✓</button>`
           }
         </div>
       </section>
@@ -141,23 +179,19 @@ export function initFocusMode({
       <section class="word-card-host" id="focus-card-host"></section>
     `;
 
-    // Fill lists only if open (to keep it light + focused)
+    // Fill lists only when open
     const learnedHost = root.querySelector("#vocab-learned");
     const unlearnedHost = root.querySelector("#vocab-unlearned");
 
     if (openPanel === "learned" && !hideWords) {
       learnedHost.replaceChildren(buildWordButtons((it, i) => isLearned(it, i)));
       if (!learnedHost.childNodes.length) learnedHost.textContent = "No learned words yet.";
-    } else {
-      learnedHost.replaceChildren();
-    }
+    } else learnedHost.replaceChildren();
 
     if (openPanel === "unlearned" && !hideWords) {
       unlearnedHost.replaceChildren(buildWordButtons((it, i) => !isLearned(it, i)));
       if (!unlearnedHost.childNodes.length) unlearnedHost.textContent = "All words learned 🎉";
-    } else {
-      unlearnedHost.replaceChildren();
-    }
+    } else unlearnedHost.replaceChildren();
 
     // Render ONE card
     const cardHost = root.querySelector("#focus-card-host");
@@ -171,18 +205,20 @@ export function initFocusMode({
         if (a === "hide") toggleHide();
         if (a === "learned") togglePanel("learned");
         if (a === "unlearned") togglePanel("unlearned");
-        if (a === "learn") markLearned();
+        if (a === "prev") prev();
+        if (a === "next") next();
+        if (a === "learnNext") markLearnedAndNext();
         if (a === "unlearn") markUnlearned();
       });
     });
 
-    // Keyboard: ← → to move, L to toggle learned
+    // Keyboard shortcuts
     window.onkeydown = (e) => {
-      if (e.key === "ArrowLeft") jumpTo(index - 1);
-      if (e.key === "ArrowRight") jumpTo(index + 1);
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
       if (e.key.toLowerCase() === "l") {
         if (isLearned(items[index], index)) markUnlearned();
-        else markLearned();
+        else markLearnedAndNext();
       }
     };
   }
