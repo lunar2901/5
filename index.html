@@ -74,6 +74,28 @@
     <a href="adjectives.html" class="drawer-link">Adjectives</a>
     <a href="adverbs.html" class="drawer-link">Adverbs</a>
   </nav>
+  <div class="drawer-section">
+  <div class="drawer-section-title">Review</div>
+
+  <button class="drawer-chip" id="btnMarkLearned" type="button">
+    Mark learned
+  </button>
+
+  <button class="drawer-chip" id="btnMarkUnlearned" type="button">
+    Mark not learned
+  </button>
+
+  <details class="drawer-acc" open>
+    <summary>Learned</summary>
+    <div id="drawerLearnedList" class="drawer-list"></div>
+  </details>
+
+  <details class="drawer-acc">
+    <summary>Not learned</summary>
+    <div id="drawerUnlearnedList" class="drawer-list"></div>
+  </details>
+</div>
+
 </aside>
   <!-- Global Search Modal -->
     <div class="modal" id="globalSearchModal" hidden>
@@ -119,6 +141,35 @@
           <button class="level-btn" data-level="c1"><span class="level-badge">C1</span><span class="level-name">Advanced</span></button>
         </div>
       </section>
+
+      <section class="search-section">
+  <div class="search-container">
+    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+    </svg>
+
+    <input
+      type="text"
+      id="search-input"
+      class="search-input"
+      placeholder="Search verbs, translations, or examples..."
+      aria-label="Search verbs"
+    />
+
+    <button id="clear-search" class="clear-search" aria-label="Clear search" style="display:none;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="verb-count-container">
+    <span id="verb-count" class="verb-count"></span>
+  </div>
+</section>
+
 
 
       <!-- Verbs Display -->
