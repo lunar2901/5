@@ -1,10 +1,26 @@
 [
   {
-    "id": "verbs:a1:anfangen",
-    "lemma": "anfangen",
-    "translation": "to start",
-    "category": "Verbs",
-    "level": "A1",
-    "url": "index.html#anfangen"
+    "id": "verbs:a1:haben",
+    "lemma": "haben",
+    "category": "verbs",
+    "level": "a1",
+    "translation": "to have",
+    "url": "index.html#verbs:a1:haben"
+  },
+  {
+    "id": "verbs:a1:sein",
+    "lemma": "sein",
+    "category": "verbs",
+    "level": "a1",
+    "translation": "to be",
+    "url": "index.html#verbs:a1:sein"
+  },
+  {
+    "id": "nouns:a1:mann",
+    "lemma": "Mann",
+    "category": "nouns",
+    "level": "a1",
+    "translation": "man",
+    "url": "nouns.html#nouns:a1:mann"
   }
 ]
