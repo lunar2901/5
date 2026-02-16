@@ -270,6 +270,9 @@ function getTranslations(v) {
 }
 
 function getExamples(v) {
+  const out = [];
+
+  // 1️⃣ normal top-level examples
   const ex =
     v.examples ??
     v.sentences ??
@@ -278,9 +281,21 @@ function getExamples(v) {
     v.usage ??
     v.sampleSentences;
 
-  if (Array.isArray(ex)) return ex.map(asText).filter(Boolean);
-  if (isNonEmptyString(ex)) return [ex];
-  return [];
+  if (Array.isArray(ex)) out.push(...ex.map(asText).filter(Boolean));
+  else if (isNonEmptyString(ex)) out.push(ex);
+
+  // 2️⃣ examples inside varieties (your DB structure)
+  if (Array.isArray(v.varieties)) {
+    v.varieties.forEach(vr => {
+      if (Array.isArray(vr.examples)) {
+        out.push(...vr.examples.map(asText).filter(Boolean));
+      } else if (isNonEmptyString(vr.examples)) {
+        out.push(vr.examples);
+      }
+    });
+  }
+
+  return out;
 }
 
 function getVariants(v) {
@@ -289,7 +304,8 @@ function getVariants(v) {
     v.variant ??
     v.alternatives ??
     v.alternative ??
-    v.phrasalVariants;
+    v.phrasalVariants ??
+    v.varieties; // ✅ support your DB
 
   if (Array.isArray(va)) return va;
   if (va && typeof va === 'object') return [va];
