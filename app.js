@@ -4,11 +4,12 @@ import verbsA1 from './js/verbs-db-a1.js';
 
 const verbsDB = {
   a1: verbsA1,
-  a2: [],
-  b1: [],
-  b2: [],
-  c1: []
+  a2: verbsA2,
+  b1: verbsB1,
+  b2: verbsB2,
+  c1: verbsC1
 };
+
 
 const levelBtns = document.querySelectorAll('.level-btn');
 const searchInput = document.getElementById('search-input');
