@@ -20,6 +20,19 @@ const nounCount = document.getElementById('noun-count');
 const clearSearchBtn = document.getElementById('clear-search');
 
 let currentLevel = 'a1';
+// ===== Saved words (localStorage) =====
+const SAVED_KEY = 'savedWordsV1';
+const getSaved = () => new Set(JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'));
+const setSaved = (set) => localStorage.setItem(SAVED_KEY, JSON.stringify([...set]));
+
+function setSaveBtnState(btn, isSaved) {
+  btn.textContent = isSaved ? '♥' : '♡';
+  btn.classList.toggle('saved', isSaved);
+}
+
+function makeSaveId(category, level, label) {
+  return `${category}:${level}:${label}`;
+}
 
 // Initialize
 renderCurrent();
@@ -131,6 +144,8 @@ function createNounCard(noun) {
     noun.gender === 'n' ? 'das' : '';
 
   const baseWord = formatNounLabel(noun);
+  const saveId = makeSaveId('nouns', currentLevel, baseWord);
+  const isInitiallySaved = getSaved().has(saveId);
 
   card.innerHTML = `
     <div class="verb-header">
