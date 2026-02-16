@@ -191,6 +191,98 @@
     closeBtn?.addEventListener("click", closeMenu);
     backdrop?.addEventListener("click", closeMenu);
   </script>
+  <script>
+  const SAVED_KEY = "savedWordsV1";
+  const getSaved = () => new Set(JSON.parse(localStorage.getItem(SAVED_KEY) || "[]"));
+  const setSaved = (set) => localStorage.setItem(SAVED_KEY, JSON.stringify([...set]));
+
+  function wireSaveButtons() {
+    document.querySelectorAll(".save-btn").forEach(btn => {
+      const id = btn.dataset.saveId;
+      const saved = getSaved();
+      if (saved.has(id)) { btn.classList.add("saved"); btn.textContent = "♥"; }
+      else { btn.classList.remove("saved"); btn.textContent = "♡"; }
+
+      btn.onclick = () => {
+        const s = getSaved();
+        if (s.has(id)) s.delete(id); else s.add(id);
+        setSaved(s);
+        if (s.has(id)) { btn.classList.add("saved"); btn.textContent = "♥"; }
+        else { btn.classList.remove("saved"); btn.textContent = "♡"; }
+      };
+    });
+  }
+
+  function openModal(id){ document.getElementById(id).hidden = false; }
+  function closeModal(id){ document.getElementById(id).hidden = true; }
+
+  document.addEventListener("click", (e) => {
+    const closeId = e.target?.dataset?.close;
+    if (closeId) closeModal(closeId);
+  });
+
+  let SEARCH_INDEX = null;
+  async function loadIndex(){
+    if (SEARCH_INDEX) return SEARCH_INDEX;
+    const res = await fetch("data/search-index.json");
+    SEARCH_INDEX = await res.json();
+    return SEARCH_INDEX;
+  }
+
+  function renderResults(container, items){
+    container.innerHTML = "";
+    if (!items.length){
+      container.innerHTML = "<div class='result'><div>No results</div></div>";
+      return;
+    }
+    items.slice(0, 50).forEach(item => {
+      const row = document.createElement("div");
+      row.className = "result";
+      row.innerHTML = `
+        <div>
+          <a href="${item.url}">${item.lemma}</a><br/>
+          <small>${item.category} • ${item.level}</small>
+        </div>
+        <button class="save-btn" data-save-id="${item.id}" aria-label="Save">♡</button>
+      `;
+      container.appendChild(row);
+    });
+    wireSaveButtons();
+  }
+
+  document.getElementById("btnGlobalSearch")?.addEventListener("click", async () => {
+    openModal("globalSearchModal");
+    const input = document.getElementById("globalSearchInput");
+    const results = document.getElementById("globalSearchResults");
+    input.value = "";
+    input.focus();
+
+    const index = await loadIndex();
+    renderResults(results, index);
+
+    input.oninput = () => {
+      const q = input.value.trim().toLowerCase();
+      if (!q) return renderResults(results, index);
+      const filtered = index.filter(x =>
+        (x.lemma && x.lemma.toLowerCase().includes(q)) ||
+        (x.translation && x.translation.toLowerCase().includes(q))
+      );
+      renderResults(results, filtered);
+    };
+  });
+
+  document.getElementById("btnSaved")?.addEventListener("click", async () => {
+    openModal("savedModal");
+    const out = document.getElementById("savedResults");
+    const saved = getSaved();
+    const index = await loadIndex();
+    const items = index.filter(x => saved.has(x.id));
+    renderResults(out, items);
+  });
+
+  // expose for app.js to call after rendering cards
+  window.wireSaveButtons = wireSaveButtons;
+</script>
 
   <script type="module" src="app.js"></script>
 </body>
