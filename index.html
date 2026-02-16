@@ -109,45 +109,14 @@
       </section>
 
       <!-- Level Selection -->
-      <section class="vocab-toolbar">
-        <div class="vocab-toolbar__left">
-          <div class="vocab-title">
-            <!-- verbs icon (simple bolt) -->
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"></path>
-            </svg>
-            <span>Verbs</span>
-          </div>
-          <div class="vocab-sub">A1–C1 • Search + filter your list</div>
-        </div>
-      
-        <div class="vocab-toolbar__right">
-          <label class="mini-select" title="Level">
-            <span class="mini-label">Level</span>
-            <select id="levelSelect">
-              <option value="a1">A1</option>
-              <option value="a2">A2</option>
-              <option value="b1">B1</option>
-              <option value="b2">B2</option>
-              <option value="c1">C1</option>
-            </select>
-          </label>
-      
-          <label class="mini-search" title="Search">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="11" cy="11" r="7"></circle>
-              <path d="M21 21l-4.3-4.3"></path>
-            </svg>
-            <input id="search-input" class="mini-search__input" placeholder="Search…" />
-            <button id="clear-search" class="icon-btn" type="button" aria-label="Clear search" style="display:none;">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 6L6 18"></path>
-                <path d="M6 6l12 12"></path>
-              </svg>
-            </button>
-          </label>
-      
-          <span id="verb-count" class="count-pill"></span>
+      <section class="level-section">
+        <h3>Select Level</h3>
+        <div class="level-buttons">
+          <button class="level-btn active" data-level="a1"><span class="level-badge">A1</span><span class="level-name">Beginner</span></button>
+          <button class="level-btn" data-level="a2"><span class="level-badge">A2</span><span class="level-name">Elementary</span></button>
+          <button class="level-btn" data-level="b1"><span class="level-badge">B1</span><span class="level-name">Intermediate</span></button>
+          <button class="level-btn" data-level="b2"><span class="level-badge">B2</span><span class="level-name">Upper Int.</span></button>
+          <button class="level-btn" data-level="c1"><span class="level-badge">C1</span><span class="level-name">Advanced</span></button>
         </div>
       </section>
 
