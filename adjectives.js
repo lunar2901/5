@@ -1,6 +1,6 @@
-// adjectives.js - Study mode (1 adjective at a time)
+// adjectives.js - Focus mode (1 adjective at a time + accordion lists)
 import adjectivesA1 from './js/adjectives-db-a1.js';
-import { initStudyMode } from './study-mode.js';
+import { initFocusMode } from './focus-mode.js';
 
 const adjectivesDB = {
   a1: adjectivesA1,
@@ -68,6 +68,9 @@ function renderCurrent(query = '') {
     return;
   }
 
+  // helps CSS override to single-column
+  root.classList.add('study-root');
+
   const list = filterAdjectives(currentLevel, query);
 
   adjectiveCount.textContent = `${list.length} ${list.length === 1 ? 'adjective' : 'adjectives'}`;
@@ -81,25 +84,64 @@ function renderCurrent(query = '') {
     return;
   }
 
-  initStudyMode({
+  initFocusMode({
     rootId: 'study-root',
     items: list,
     level: currentLevel,
     storageKey: 'adjectives',
 
-    getId: (item) => item.word,
-    getFront: (item) => item.word || '—',
-    getBack: (item) => (item.translations || []).join(', '),
-    getExtra: (item) => formatAdjectiveExtra(item)
+    getId: (a) => a.word,
+    getLabel: (a) => a.word || '—',
+    renderCard: (a) => createAdjectiveCard(a)
   });
 }
 
-function formatAdjectiveExtra(adj) {
-  const comp = adj.comparative ? `Comparative: ${adj.comparative}` : '';
-  const sup = adj.superlative ? `Superlative: ${adj.superlative}` : '';
-  const examples = (adj.examples || []).slice(0, 2);
-  const exText = examples.length ? `Examples: ${examples.join(' | ')}` : '';
-  return [ [comp, sup].filter(Boolean).join(' • '), exText ].filter(Boolean).join('\n');
+// ✅ Adjective card styled using your existing verb-card CSS classes
+function createAdjectiveCard(adj) {
+  const card = document.createElement('div');
+  card.className = 'verb-card';
+
+  const word = adj.word || '—';
+  const translations = (adj.translations || []).join(', ') || '—';
+  const comp = adj.comparative || '—';
+  const sup = adj.superlative || '—';
+
+  card.innerHTML = `
+    <div class="verb-header">
+      <div class="verb-base">${escapeHtml(word)}</div>
+    </div>
+
+    <div class="verb-forms">
+      <div class="form-item">
+        <span class="form-label">Comparative</span>
+        <span class="form-value">${escapeHtml(comp)}</span>
+      </div>
+      <div class="form-item">
+        <span class="form-label">Superlative</span>
+        <span class="form-value">${escapeHtml(sup)}</span>
+      </div>
+    </div>
+
+    <div class="verb-info">
+      <span class="label">Translation:</span>
+      <span class="value">${escapeHtml(translations)}</span>
+    </div>
+
+    ${
+      (adj.examples || []).length
+        ? `
+          <div class="examples-section">
+            <h4>Examples</h4>
+            <ul class="examples-list">
+              ${(adj.examples || []).slice(0, 4).map(ex => `<li>${escapeHtml(ex)}</li>`).join('')}
+            </ul>
+          </div>
+        `
+        : ''
+    }
+  `;
+
+  return card;
 }
 
 function updateCounts() {
