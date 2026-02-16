@@ -1199,10 +1199,9 @@ body {
 .mb-3 { margin-bottom: var(--spacing-lg); }
 
 /* =========================
-   Focus Mode (1 word view)
+   Focus Mode - Screenshot style
    ========================= */
 
-/* The root that holds: Vocabulary List (accordion) + single card */
 .study-root {
   display: grid;
   gap: var(--spacing-xl);
@@ -1211,147 +1210,129 @@ body {
 /* If you render inside #verbs-list (index page), force single-column */
 .verbs-list.study-root { grid-template-columns: 1fr !important; }
 
-/* --- Vocabulary List panel (top) --- */
-.focus-list-card {
+/* --- Top Vocabulary List panel --- */
+.vocab-panel {
   background: white;
   border-radius: var(--radius-xl);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-lg);
-  max-width: 720px; /* optional: keeps it compact like your screenshot */
+  max-width: 720px;
 }
 
-.focus-list-title {
-  font-size: 1.5rem;
-  margin-bottom: var(--spacing-md);
-  color: var(--primary-color);
+.vocab-title {
+  color: var(--primary-light);
   font-weight: 800;
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-md);
 }
 
-/* Accordion sections */
-.focus-acc {
-  background: var(--gray-100);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-md);
+/* The three grey collapsible bars */
+.vocab-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--gray-200);
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   margin-top: var(--spacing-md);
-}
-
-.focus-acc summary {
   cursor: pointer;
   font-weight: 700;
-  color: var(--gray-800);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  list-style: none;
+  font-family: inherit;
 }
 
-.focus-acc summary::-webkit-details-marker {
+.vocab-row:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vocab-row .chev {
+  font-size: 1rem;
+}
+
+/* Hidden until opened */
+.vocab-body {
   display: none;
-}
-
-/* Body: the word chips container */
-.focus-acc-body {
-  margin-top: var(--spacing-md);
-  display: flex;
-  flex-wrap: wrap;
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+  background: var(--gray-100);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+  max-height: 240px;
+  overflow: auto;
   gap: var(--spacing-sm);
 }
 
-/* Word chips */
-.focus-mini-item {
-  border: 1px solid var(--gray-200);
+.vocab-body.open {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Buttons inside the opened list */
+.vocab-word {
+  border: 1px solid var(--gray-300);
   background: white;
-  padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
   cursor: pointer;
   font-weight: 600;
-  color: var(--gray-800);
   transition: all var(--transition-fast);
 }
 
-.focus-mini-item:hover {
+.vocab-word:hover {
   border-color: var(--primary-color);
   box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
 }
 
-/* --- Navigation + actions under the list --- */
-.focus-nav {
+.vocab-word.active {
+  border-color: var(--primary-color);
+  background: rgba(30, 58, 138, 0.08);
+}
+
+/* Small toolbar above the single word card */
+.word-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-md);
+  flex-wrap: wrap;
 }
 
-.focus-counter {
-  font-weight: 700;
-  color: white; /* sits on gradient background usually */
+.word-meta {
+  color: white;
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  flex-wrap: wrap;
+  font-weight: 600;
   opacity: 0.95;
 }
 
-/* Buttons (reuse your look) */
-.focus-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-radius: var(--radius-lg);
+.word-level {
+  background: rgba(255,255,255,0.15);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+}
+
+.word-btn {
   border: 2px solid var(--gray-200);
   background: white;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-sm) var(--spacing-lg);
   cursor: pointer;
   font-weight: 700;
   transition: all var(--transition-base);
   font-family: inherit;
 }
 
-.focus-btn:hover:not(:disabled) {
-  border-color: var(--primary-color);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
-}
-
-.focus-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.focus-btn.primary {
+.word-btn.primary {
   background: var(--primary-color);
   border-color: var(--primary-color);
   color: white;
 }
 
-.focus-btn.primary:hover:not(:disabled) {
-  background: var(--primary-dark);
-  border-color: var(--primary-dark);
-}
-
-.focus-actions {
-  display: flex;
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
-}
-
-/* Where your existing noun/verb/adjective/adverb card gets inserted */
-.focus-card-host {
-  /* no forced styling here; it will inherit your card styles (verb-card/noun-card/etc.) */
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .focus-list-card {
-    max-width: 100%;
-  }
-  .focus-nav {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .focus-counter {
-    text-align: center;
-  }
-  .focus-actions .focus-btn {
-    width: 100%;
-  }
+.word-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
