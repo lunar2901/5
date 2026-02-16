@@ -1,4 +1,4 @@
-// focus-mode.js
+// focus-mode.js (minimal on-page UI + drawer lists API)
 export function initFocusMode({
   rootId = "study-root",
   items = [],
@@ -17,252 +17,134 @@ export function initFocusMode({
 
   const keyLearned = `${storageKey}:learned:${level}`;
   const keyIndex = `${storageKey}:index:${level}`;
-  const keyHide = `${storageKey}:hideWords:${level}`;
-  const keyOpen = `${storageKey}:openPanel:${level}`; // "learned" | "unlearned" | ""
-  const keyZen = `${storageKey}:zen:${level}`; // "1" | "0"
 
   const learnedSet = new Set(JSON.parse(localStorage.getItem(keyLearned) || "[]"));
   let index = clamp(parseInt(localStorage.getItem(keyIndex) || "0", 10), 0, Math.max(items.length - 1, 0));
 
-  let hideWords = localStorage.getItem(keyHide) === "1";
-  let openPanel = localStorage.getItem(keyOpen) || "";
-
-  const isSmallScreen = () => window.matchMedia('(max-width: 768px)').matches;
-  let zen = (() => {
-    // Default: ON for small screens so the user focuses on the word.
-    const saved = localStorage.getItem(keyZen);
-    if (saved === '1') return true;
-    if (saved === '0') return false;
-    return isSmallScreen();
-  })();
-
-  function applyZen() {
-    document.body.classList.toggle('zen-mode', !!zen);
-  }
-
   function save() {
     localStorage.setItem(keyLearned, JSON.stringify([...learnedSet]));
     localStorage.setItem(keyIndex, String(index));
-    localStorage.setItem(keyHide, hideWords ? "1" : "0");
-    localStorage.setItem(keyOpen, openPanel);
-    localStorage.setItem(keyZen, zen ? '1' : '0');
   }
 
   function isLearned(item, idx) {
     return learnedSet.has(getId(item, idx));
   }
 
+  function getLists() {
+    const learned = [];
+    const unlearned = [];
+    items.forEach((it, i) => {
+      const row = { i, id: getId(it, i), label: getLabel(it) };
+      if (isLearned(it, i)) learned.push(row);
+      else unlearned.push(row);
+    });
+    return { learned, unlearned };
+  }
+
   function jumpTo(i) {
     index = clamp(i, 0, items.length - 1);
     save();
     render();
+    api.onChange?.(api.getState());
   }
 
-  function findNextUnlearned(fromIndex) {
-    if (!items.length) return 0;
-    for (let i = fromIndex + 1; i < items.length; i++) {
-      if (!isLearned(items[i], i)) return i;
-    }
-    // wrap
-    for (let i = 0; i <= fromIndex; i++) {
-      if (!isLearned(items[i], i)) return i;
-    }
-    return fromIndex; // all learned
-  }
+  function next() { jumpTo(Math.min(index + 1, items.length - 1)); }
+  function prev() { jumpTo(Math.max(index - 1, 0)); }
 
-  function findPrevUnlearned(fromIndex) {
-    if (!items.length) return 0;
-    for (let i = fromIndex - 1; i >= 0; i--) {
-      if (!isLearned(items[i], i)) return i;
-    }
-    // wrap
-    for (let i = items.length - 1; i >= fromIndex; i--) {
-      if (!isLearned(items[i], i)) return i;
-    }
-    return fromIndex;
-  }
-
-  function next() {
-    // Move forward (prefer next unlearned)
-    const nextIdx = findNextUnlearned(index);
-    jumpTo(nextIdx === index ? Math.min(index + 1, items.length - 1) : nextIdx);
-  }
-
-  function prev() {
-    const prevIdx = findPrevUnlearned(index);
-    jumpTo(prevIdx === index ? Math.max(index - 1, 0) : prevIdx);
-  }
-
-  function toggleHide() {
-    hideWords = !hideWords;
-    if (hideWords) openPanel = "";
+  function setLearned(val) {
+    const id = getId(items[index], index);
+    if (val) learnedSet.add(id);
+    else learnedSet.delete(id);
     save();
-    render();
+    api.onChange?.(api.getState());
   }
 
-  function togglePanel(name) {
-    if (hideWords) return;
-    openPanel = openPanel === name ? "" : name;
-    save();
-    render();
-  }
-
-  function toggleZen() {
-    zen = !zen;
-    save();
-    render();
-  }
-
-  function buildWordButtons(filterFn) {
-    const frag = document.createDocumentFragment();
-
-    items.forEach((it, i) => {
-      if (!filterFn(it, i)) return;
-
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "vocab-word";
-      btn.textContent = getLabel(it);
-      if (i === index) btn.classList.add("active");
-      btn.addEventListener("click", () => jumpTo(i));
-      frag.appendChild(btn);
-    });
-
-    return frag;
+  function toggleLearned() {
+    setLearned(!isLearned(items[index], index));
   }
 
   function render() {
-    if (!Array.isArray(items) || items.length === 0) {
+    if (!items.length) {
       root.innerHTML = `<div class="no-results"><p>No items in this level.</p></div>`;
       return;
     }
 
-    applyZen();
-
     const currentItem = items[index];
-    
-    // ✅ Auto-learn first
-    const currentId = getId(currentItem, index);
-    if (!learnedSet.has(currentId)) {
-      learnedSet.add(currentId);
-      save();
-    }
-    
-    // ✅ Now calculate counts
-    const learnedCount = items.reduce((acc, it, i) => acc + (isLearned(it, i) ? 1 : 0), 0);
-    const unlearnedCount = items.length - learnedCount;
-
-
-
 
     root.innerHTML = `
-      <button type="button" class="zen-fab" data-action="zen" aria-label="${zen ? 'Show menus' : 'Hide menus'}">
-        ${zen ? '☰' : '⛶'}
-      </button>
-
-      <section class="vocab-panel">
-        <h3 class="vocab-title">Vocabulary List</h3>
-
-        <button type="button" class="vocab-row" data-action="hide">
-          <span>Hide Words</span>
-          <span class="chev">${hideWords ? "▲" : "▼"}</span>
-        </button>
-
-        <button type="button" class="vocab-row" data-action="learned" ${hideWords ? "disabled" : ""}>
-          <span>✅ Learned</span>
-          <span class="chev">${openPanel === "learned" ? "▲" : "▼"}</span>
-        </button>
-        <div class="vocab-body ${openPanel === "learned" && !hideWords ? "open" : ""}" id="vocab-learned"></div>
-
-        <button type="button" class="vocab-row" data-action="unlearned" ${hideWords ? "disabled" : ""}>
-          <span>📌 Not learned yet</span>
-          <span class="chev">${openPanel === "unlearned" ? "▲" : "▼"}</span>
-        </button>
-        <div class="vocab-body ${openPanel === "unlearned" && !hideWords ? "open" : ""}" id="vocab-unlearned"></div>
-      </section>
-
-      <section class="word-toolbar">
-        <div class="word-meta">
-          <span class="word-level">${String(level).toUpperCase()}</span>
-          <span class="word-count">${index + 1} / ${items.length}</span>
-          <span class="word-stats">${learnedCount} learned • ${unlearnedCount} not learned</span>
+      <section class="focus-topbar">
+        <div class="focus-meta">
+          <span class="focus-level">${String(level).toUpperCase()}</span>
+          <span class="focus-count">${index + 1} / ${items.length}</span>
         </div>
 
-        <div class="word-actions">
+        <div class="focus-actions">
           <button type="button" class="word-btn" data-action="prev">← Prev</button>
           <button type="button" class="word-btn" data-action="next">Next →</button>
         </div>
-        
       </section>
 
       <section class="word-card-host" id="focus-card-host"></section>
     `;
 
-    // Fill lists only when open
-    const learnedHost = root.querySelector("#vocab-learned");
-    const unlearnedHost = root.querySelector("#vocab-unlearned");
-
-    if (openPanel === "learned" && !hideWords) {
-      learnedHost.replaceChildren(buildWordButtons((it, i) => isLearned(it, i)));
-      if (!learnedHost.childNodes.length) learnedHost.textContent = "No learned words yet.";
-    } else learnedHost.replaceChildren();
-
-    if (openPanel === "unlearned" && !hideWords) {
-      unlearnedHost.replaceChildren(buildWordButtons((it, i) => !isLearned(it, i)));
-      if (!unlearnedHost.childNodes.length) unlearnedHost.textContent = "All words learned 🎉";
-    } else unlearnedHost.replaceChildren();
-
-    // Render ONE card
     const cardHost = root.querySelector("#focus-card-host");
-    cardHost.innerHTML = "";
-    cardHost.appendChild(renderCard(currentItem, index));
+    cardHost.replaceChildren(renderCard(currentItem, index));
 
-    // Actions
-    root.querySelectorAll("[data-action]").forEach((el) => {
-      el.addEventListener("click", () => {
-        const a = el.getAttribute("data-action");
-        if (a === "hide") toggleHide();
-        if (a === "learned") togglePanel("learned");
-        if (a === "unlearned") togglePanel("unlearned");
-        if (a === "prev") prev();
-        if (a === "next") next();
-        if (a === "zen") toggleZen();
-      });
-    });
+    root.querySelector('[data-action="prev"]')?.addEventListener("click", prev);
+    root.querySelector('[data-action="next"]')?.addEventListener("click", next);
 
-    // Keyboard shortcuts
+    // keyboard
     window.onkeydown = (e) => {
       if (e.key === "ArrowLeft") prev();
       if (e.key === "ArrowRight") next();
-      if (e.key.toLowerCase() === 'm') toggleZen();
     };
 
-    // Swipe navigation on touch devices (works even when menus are hidden)
-    if (cardHost) {
-      let x0 = null;
-      let y0 = null;
-      cardHost.addEventListener('touchstart', (e) => {
-        const t = e.touches && e.touches[0];
-        if (!t) return;
-        x0 = t.clientX;
-        y0 = t.clientY;
-      }, { passive: true });
-      cardHost.addEventListener('touchend', (e) => {
-        const t = e.changedTouches && e.changedTouches[0];
-        if (!t || x0 == null || y0 == null) return;
-        const dx = t.clientX - x0;
-        const dy = t.clientY - y0;
-        x0 = null;
-        y0 = null;
-        // horizontal swipe only
-        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-        if (dx < 0) next();
-        else prev();
-      }, { passive: true });
-    }
+    // swipe
+    let x0 = null, y0 = null;
+    cardHost.addEventListener("touchstart", (e) => {
+      const t = e.touches && e.touches[0];
+      if (!t) return;
+      x0 = t.clientX; y0 = t.clientY;
+    }, { passive: true });
+
+    cardHost.addEventListener("touchend", (e) => {
+      const t = e.changedTouches && e.changedTouches[0];
+      if (!t || x0 == null || y0 == null) return;
+      const dx = t.clientX - x0;
+      const dy = t.clientY - y0;
+      x0 = null; y0 = null;
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+      if (dx < 0) next(); else prev();
+    }, { passive: true });
   }
 
+  const api = {
+    // state + lists for hamburger drawer
+    getState() {
+      const lists = getLists();
+      return {
+        level,
+        index,
+        total: items.length,
+        current: {
+          id: getId(items[index], index),
+          label: getLabel(items[index]),
+          learned: isLearned(items[index], index),
+        },
+        learned: lists.learned,
+        unlearned: lists.unlearned,
+      };
+    },
+    jumpTo,
+    next,
+    prev,
+    setLearned,
+    toggleLearned,
+    onChange: null, // you assign this from app.js
+  };
+
   render();
+  return api;
 }
 
 function clamp(n, min, max) {
