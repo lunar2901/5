@@ -1,4 +1,4 @@
-// nouns-db-c1.js - C1 Level Nouns (30 advanced nouns)
+// nouns-db-c1.js - C1 Level Nouns (advanced nouns)
 const nounsC1 = [
   {word:"die Herausforderung",gender:"f",plural:"die Herausforderungen",genitive:"der Herausforderung",translations:["challenge"],examples:["Das Projekt ist eine große Herausforderung.","Ich suche neue Herausforderungen im Job.","Wir meistern die Herausforderung gemeinsam."]},
   {word:"die Voraussetzung",gender:"f",plural:"die Voraussetzungen",genitive:"der Voraussetzung",translations:["prerequisite","requirement"],examples:["Erfahrung ist eine wichtige Voraussetzung.","Gute Deutschkenntnisse sind Voraussetzung für die Stelle.","Welche Voraussetzungen gelten für die Teilnahme?"]},
@@ -29,7 +29,10 @@ const nounsC1 = [
   {word:"die Nachhaltigkeit",gender:"f",plural:"die Nachhaltigkeiten",genitive:"der Nachhaltigkeit",translations:["sustainability"],examples:["Nachhaltigkeit spielt eine zentrale Rolle.","Wir achten auf die Nachhaltigkeit der Materialien.","Die Nachhaltigkeit der Lösung überzeugt."]},
   {word:"die Priorität",gender:"f",plural:"die Prioritäten",genitive:"der Priorität",translations:["priority"],examples:["Das hat Priorität.","Wir setzen klare Prioritäten.","Sicherheit hat höchste Priorität."]},
   {word:"die Abwägung",gender:"f",plural:"die Abwägungen",genitive:"der Abwägung",translations:["weighing (of pros/cons)","assessment"],examples:["Nach Abwägung aller Faktoren entscheiden wir.","Die Abwägung dauert länger als gedacht.","Eine gute Abwägung braucht Daten."]},
-  {word:"die Schlussfolgerung",gender:"f",plural:"die Schlussfolgerungen",genitive:"der Schlussfolgerung",translations:["conclusion","inference"],examples:["Die Schlussfolgerung ist überzeugend.","Wir ziehen eine Schlussfolgerung aus den Ergebnissen.","Welche Schlussfolgerungen ziehen Sie daraus?"]}
+
+  // ✅ FIXED: comma was missing here in your original code
+  {word:"die Schlussfolgerung",gender:"f",plural:"die Schlussfolgerungen",genitive:"der Schlussfolgerung",translations:["conclusion","inference"],examples:["Die Schlussfolgerung ist überzeugend.","Wir ziehen eine Schlussfolgerung aus den Ergebnissen.","Welche Schlussfolgerungen ziehen Sie daraus?"]},
+
   {word:"die Behauptung",gender:"f",plural:"die Behauptungen",genitive:"der Behauptung",translations:["claim","assertion"],examples:["Eine kühne Behauptung.","Die Behauptung widerlegen."]},
   {word:"die Annahme",gender:"f",plural:"die Annahmen",genitive:"der Annahme",translations:["assumption","acceptance"],examples:["Unter der Annahme, dass...","Diese Annahme ist falsch."]},
   {word:"die Vermutung",gender:"f",plural:"die Vermutungen",genitive:"der Vermutung",translations:["assumption","supposition"],examples:["Eine bloße Vermutung.","Vermutungen anstellen."]},
