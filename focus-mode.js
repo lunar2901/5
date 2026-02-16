@@ -17,17 +17,30 @@ export function initFocusMode({
 
   const keyLearned = `${storageKey}:learned:${level}`;
   const keyIndex = `${storageKey}:index:${level}`;
+  const keyHide = `${storageKey}:hideWords:${level}`;
+  const keyOpen = `${storageKey}:openPanel:${level}`; // "learned" | "unlearned" | ""
 
   const learnedSet = new Set(JSON.parse(localStorage.getItem(keyLearned) || "[]"));
-  let index = clamp(parseInt(localStorage.getItem(keyIndex) || "0", 10), 0, items.length - 1);
+  let index = clamp(parseInt(localStorage.getItem(keyIndex) || "0", 10), 0, Math.max(items.length - 1, 0));
+
+  let hideWords = localStorage.getItem(keyHide) === "1"; // default false
+  let openPanel = localStorage.getItem(keyOpen) || "";   // default closed
 
   function save() {
     localStorage.setItem(keyLearned, JSON.stringify([...learnedSet]));
     localStorage.setItem(keyIndex, String(index));
+    localStorage.setItem(keyHide, hideWords ? "1" : "0");
+    localStorage.setItem(keyOpen, openPanel);
   }
 
   function isLearned(item, idx) {
     return learnedSet.has(getId(item, idx));
+  }
+
+  function jumpTo(i) {
+    index = clamp(i, 0, items.length - 1);
+    save();
+    render();
   }
 
   function markLearned() {
@@ -42,40 +55,41 @@ export function initFocusMode({
     render();
   }
 
-  function goPrev() {
-    index = clamp(index - 1, 0, items.length - 1);
+  function toggleHide() {
+    hideWords = !hideWords;
+    // when hiding, also close panels
+    if (hideWords) openPanel = "";
     save();
     render();
   }
 
-  function goNext() {
-    index = clamp(index + 1, 0, items.length - 1);
+  function togglePanel(name) {
+    if (hideWords) return; // disabled when hidden
+    openPanel = openPanel === name ? "" : name;
     save();
     render();
   }
 
-  function jumpTo(i) {
-    index = clamp(i, 0, items.length - 1);
-    save();
-    render();
-  }
+  function buildWordButtons(filterFn) {
+    const frag = document.createDocumentFragment();
 
-  function renderList(filterFn) {
-    return items
-      .map((it, i) => ({ it, i }))
-      .filter(({ it, i }) => filterFn(it, i))
-      .map(({ it, i }) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "focus-mini-item";
-        btn.textContent = getLabel(it);
-        btn.addEventListener("click", () => jumpTo(i));
-        return btn;
-      });
+    items.forEach((it, i) => {
+      if (!filterFn(it, i)) return;
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "vocab-word";
+      btn.textContent = getLabel(it);
+      if (i === index) btn.classList.add("active");
+      btn.addEventListener("click", () => jumpTo(i));
+      frag.appendChild(btn);
+    });
+
+    return frag;
   }
 
   function render() {
-    if (!items.length) {
+    if (!Array.isArray(items) || items.length === 0) {
       root.innerHTML = `<div class="no-results"><p>No items in this level.</p></div>`;
       return;
     }
@@ -83,74 +97,91 @@ export function initFocusMode({
     const learnedCount = items.reduce((acc, it, i) => acc + (isLearned(it, i) ? 1 : 0), 0);
     const unlearnedCount = items.length - learnedCount;
 
+    const currentItem = items[index];
+    const currentLearned = isLearned(currentItem, index);
+
     root.innerHTML = `
-      <section class="focus-list-card">
-        <h3 class="focus-list-title">Vocabulary List</h3>
+      <section class="vocab-panel">
+        <h3 class="vocab-title">Vocabulary List</h3>
 
-        <details class="focus-acc">
-          <summary>Hide Words</summary>
-          <div class="focus-acc-body">
-            <p class="focus-muted">
-              Collapse “Learned” and “Not learned yet” to focus only on the current word.
-            </p>
-          </div>
-        </details>
+        <button type="button" class="vocab-row" data-action="hide">
+          <span>Hide Words</span>
+          <span class="chev">${hideWords ? "▲" : "▼"}</span>
+        </button>
 
-        <details class="focus-acc">
-          <summary>✅ Learned (${learnedCount})</summary>
-          <div class="focus-acc-body" id="focus-learned"></div>
-        </details>
+        <button type="button" class="vocab-row" data-action="learned" ${hideWords ? "disabled" : ""}>
+          <span>✅ Learned</span>
+          <span class="chev">${openPanel === "learned" ? "▲" : "▼"}</span>
+        </button>
+        <div class="vocab-body ${openPanel === "learned" && !hideWords ? "open" : ""}" id="vocab-learned"></div>
 
-        <details class="focus-acc" open>
-          <summary>📌 Not learned yet (${unlearnedCount})</summary>
-          <div class="focus-acc-body" id="focus-unlearned"></div>
-        </details>
+        <button type="button" class="vocab-row" data-action="unlearned" ${hideWords ? "disabled" : ""}>
+          <span>📌 Not learned yet</span>
+          <span class="chev">${openPanel === "unlearned" ? "▲" : "▼"}</span>
+        </button>
+        <div class="vocab-body ${openPanel === "unlearned" && !hideWords ? "open" : ""}" id="vocab-unlearned"></div>
       </section>
 
-      <section class="focus-nav">
-        <button type="button" class="focus-btn" data-action="prev" ${index === 0 ? "disabled" : ""}>← Prev</button>
-        <div class="focus-counter">${index + 1} / ${items.length}</div>
-        <button type="button" class="focus-btn" data-action="next" ${index === items.length - 1 ? "disabled" : ""}>Next →</button>
+      <section class="word-toolbar">
+        <div class="word-meta">
+          <span class="word-level">${level.toUpperCase()}</span>
+          <span class="word-count">${index + 1} / ${items.length}</span>
+          <span class="word-stats">${learnedCount} learned • ${unlearnedCount} not learned</span>
+        </div>
+
+        <div class="word-actions">
+          ${
+            currentLearned
+              ? `<button type="button" class="word-btn" data-action="unlearn">Mark Unlearned</button>`
+              : `<button type="button" class="word-btn primary" data-action="learn">Mark Learned</button>`
+          }
+        </div>
       </section>
 
-      <section class="focus-actions">
-        <button type="button" class="focus-btn primary" data-action="learn">Mark Learned</button>
-        <button type="button" class="focus-btn" data-action="unlearn">Mark Unlearned</button>
-      </section>
-
-      <section id="focus-card-host" class="focus-card-host"></section>
+      <section class="word-card-host" id="focus-card-host"></section>
     `;
 
-    // Fill lists
-    const learnedHost = root.querySelector("#focus-learned");
-    const unlearnedHost = root.querySelector("#focus-unlearned");
+    // Fill lists only if open (to keep it light + focused)
+    const learnedHost = root.querySelector("#vocab-learned");
+    const unlearnedHost = root.querySelector("#vocab-unlearned");
 
-    learnedHost.replaceChildren(...renderList((it, i) => isLearned(it, i)));
-    unlearnedHost.replaceChildren(...renderList((it, i) => !isLearned(it, i)));
+    if (openPanel === "learned" && !hideWords) {
+      learnedHost.replaceChildren(buildWordButtons((it, i) => isLearned(it, i)));
+      if (!learnedHost.childNodes.length) learnedHost.textContent = "No learned words yet.";
+    } else {
+      learnedHost.replaceChildren();
+    }
 
-    // Render ONE card (your existing design)
-    const host = root.querySelector("#focus-card-host");
-    host.innerHTML = "";
-    host.appendChild(renderCard(items[index], index));
+    if (openPanel === "unlearned" && !hideWords) {
+      unlearnedHost.replaceChildren(buildWordButtons((it, i) => !isLearned(it, i)));
+      if (!unlearnedHost.childNodes.length) unlearnedHost.textContent = "All words learned 🎉";
+    } else {
+      unlearnedHost.replaceChildren();
+    }
 
-    // Buttons
-    root.querySelectorAll("[data-action]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const a = btn.getAttribute("data-action");
-        if (a === "prev") goPrev();
-        if (a === "next") goNext();
+    // Render ONE card
+    const cardHost = root.querySelector("#focus-card-host");
+    cardHost.innerHTML = "";
+    cardHost.appendChild(renderCard(currentItem, index));
+
+    // Actions
+    root.querySelectorAll("[data-action]").forEach((el) => {
+      el.addEventListener("click", () => {
+        const a = el.getAttribute("data-action");
+        if (a === "hide") toggleHide();
+        if (a === "learned") togglePanel("learned");
+        if (a === "unlearned") togglePanel("unlearned");
         if (a === "learn") markLearned();
         if (a === "unlearn") markUnlearned();
       });
     });
 
-    // Optional keyboard
+    // Keyboard: ← → to move, L to toggle learned
     window.onkeydown = (e) => {
-      if (e.key === "ArrowLeft") goPrev();
-      if (e.key === "ArrowRight") goNext();
+      if (e.key === "ArrowLeft") jumpTo(index - 1);
+      if (e.key === "ArrowRight") jumpTo(index + 1);
       if (e.key.toLowerCase() === "l") {
-        const it = items[index];
-        if (isLearned(it, index)) markUnlearned();
+        if (isLearned(items[index], index)) markUnlearned();
         else markLearned();
       }
     };
