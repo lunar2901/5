@@ -1,12 +1,10 @@
 // app.js - Focus mode (1 verb at a time + accordion lists)
 import { initFocusMode } from './focus-mode.js';
 import verbsA1 from './js/verbs-db-a1.js';
-import verbsA1 from './js/verbs-db-a1.js';
 import verbsA2 from './js/verbs-db-a2.js';
 import verbsB1 from './js/verbs-db-b1.js';
 import verbsB2 from './js/verbs-db-b2.js';
-import verbsC1 from './js/verbs-db-c1.js';
-
+import verbsC1 from './js/verbs-db-C1.js';
 
 const verbsDB = {
   a1: verbsA1,
