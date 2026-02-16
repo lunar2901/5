@@ -97,17 +97,20 @@ function renderCurrent(query = '') {
     return;
   }
 
-  initFocusMode({
-    rootId,
-    items: list,
-    level: currentLevel,
-    storageKey: 'verbs',
+  const api = initFocusMode({
+  rootId,
+  items: list,
+  level: currentLevel,
+  storageKey: 'verbs',
+  getId: (v, idx) => `verbs:${currentLevel}:${getVerbBase(v)}`, // stable id (no idx)
+  getLabel: (v) => getVerbBase(v),
+  renderCard: (v, idx) => createVerbCard(v, idx)
+});
 
-    getId: (v, idx) => `${getVerbBase(v)}::${idx}`, // stable enough even if duplicates
-    getLabel: (v) => getVerbBase(v),
-    renderCard: (v, idx) => createVerbCard(v, idx)
-  });
-}
+// push learned/unlearned into drawer
+wireDrawerReview(api);
+api.onChange = () => wireDrawerReview(api);
+
 
 function filterVerbs(level, query) {
   const list = verbsDB[level] || [];
@@ -372,7 +375,7 @@ function createVerbCard(v, idx) {
   card.className = 'verb-card';
 
   const base = getVerbBase(v);
-  const saveId = makeSaveId('verbs', currentLevel, base, idx);
+  const saveId = `verbs:${currentLevel}:${base}`;
   const typeText = getTypeText(v);
   const forms = getForms(v);
   const translations = getTranslations(v);
@@ -517,4 +520,32 @@ function escapeHtml(s) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+function wireDrawerReview(api) {
+  const st = api.getState();
+
+  const learnedHost = document.getElementById("drawerLearnedList");
+  const unlearnedHost = document.getElementById("drawerUnlearnedList");
+
+  if (learnedHost) {
+    learnedHost.innerHTML = st.learned.length
+      ? st.learned.map(x => `<button class="drawer-item" data-jump="${x.i}">${escapeHtml(x.label)}</button>`).join("")
+      : `<div class="drawer-empty">No learned words yet.</div>`;
+  }
+
+  if (unlearnedHost) {
+    unlearnedHost.innerHTML = st.unlearned.length
+      ? st.unlearned.map(x => `<button class="drawer-item" data-jump="${x.i}">${escapeHtml(x.label)}</button>`).join("")
+      : `<div class="drawer-empty">All learned 🎉</div>`;
+  }
+
+  document.querySelectorAll("[data-jump]").forEach(btn => {
+    btn.onclick = () => api.jumpTo(parseInt(btn.dataset.jump, 10));
+  });
+
+  document.getElementById("btnMarkLearned")?.onclick = () => api.setLearned(true);
+  document.getElementById("btnMarkUnlearned")?.onclick = () => api.setLearned(false);
+
+  // your save hearts are inside the card, so re-wire them after render
+  window.wireSaveButtons?.();
 }
