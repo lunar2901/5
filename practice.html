@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice German Verbs</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇩🇪</text></svg>">
+</head>
+<body>
+  <header class="main-header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="40" height="13.33" fill="#000"/>
+            <rect y="13.33" width="40" height="13.33" fill="#DD0000"/>
+            <rect y="26.67" width="40" height="13.33" fill="#FFCE00"/>
+          </svg>
+          <h1>German Verbs</h1>
+        </div>
+        <nav class="main-nav">
+          <a href="index.html" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            </svg>
+            Verbs
+          </a>
+          <a href="nouns.html" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            </svg>
+            Nouns
+          </a>
+          <a href="adjectives.html" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+            </svg>
+            Adjectives
+          </a>
+          <a href="adverbs.html" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            </svg>
+            Adverbs
+          </a>
+          <a href="grammar.html" class="nav-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            Grammar
+          </a>
+          <a href="practice.html" class="nav-link active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            Practice
+          </a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content practice-page">
+    <div class="container">
+      <!-- Practice Header -->
+      <section class="practice-header">
+        <h2>Practice Mode</h2>
+        <p>Test your knowledge with interactive exercises</p>
+      </section>
+
+      <!-- Settings -->
+      <section class="practice-settings">
+        <div class="settings-row">
+          <div class="setting-group">
+            <label for="practice-level">Level:</label>
+            <select id="practice-level" class="select-input">
+              <option value="a1">A1 - Beginner</option>
+              <option value="a2">A2 - Elementary</option>
+              <option value="b1">B1 - Intermediate</option>
+              <option value="b2">B2 - Upper Intermediate</option>
+              <option value="c1">C1 - Advanced</option>
+            </select>
+          </div>
+          
+          <div class="setting-group">
+            <label for="exercise-type">Exercise Type:</label>
+            <select id="exercise-type" class="select-input">
+              <option value="mixed">Mixed Practice</option>
+              <option value="forms">Verb Forms</option>
+              <option value="translation">Translation</option>
+              <option value="preposition">Prepositions</option>
+              <option value="multiple-choice">Multiple Choice</option>
+              <option value="fill-blank">Fill in the Blank</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Score Display -->
+        <div class="score-container">
+          <div class="score-item">
+            <span class="score-label">Score:</span>
+            <span id="score" class="score-value">0/0 (0%)</span>
+          </div>
+          <div class="score-item streak-item">
+            <span class="score-label">Streak:</span>
+            <span id="streak" class="score-value">0</span>
+            <span class="streak-icon">🔥</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Exercise Container -->
+      <section class="exercise-section">
+        <div class="exercise-card">
+          <div id="exercise-box" class="exercise-content">
+            <p class="question">Loading...</p>
+          </div>
+          
+          <!-- Answer Input -->
+          <div class="answer-container">
+            <input 
+              type="text" 
+              id="answer-input" 
+              class="answer-input" 
+              placeholder="Type your answer..."
+              aria-label="Answer input"
+            >
+            
+            <!-- Multiple Choice Options -->
+            <div id="options-container" class="options-container" style="display: none;"></div>
+          </div>
+          
+          <!-- Feedback -->
+          <div id="feedback" class="feedback"></div>
+          
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button id="check-answer" class="btn btn-primary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Check Answer
+            </button>
+            <button id="show-answer" class="btn btn-secondary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              Show Answer
+            </button>
+            <button id="new-exercise" class="btn btn-accent">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+              Next Exercise
+            </button>
+          </div>
+        </div>
+        
+        <!-- Tips Section -->
+        <div class="tips-section">
+          <h3>💡 Practice Tips</h3>
+          <ul>
+            <li>Focus on one level at a time to build solid foundations</li>
+            <li>Pay attention to prepositions - they're crucial in German</li>
+            <li>Try to maintain a streak to stay motivated!</li>
+            <li>Use the "Show Answer" button if you're stuck, but try to answer first</li>
+            <li>Read the example sentences to understand context</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div class="container">
+      <p>&copy; 2026 German Verbs Learning App | Built with ❤️ for language learners</p>
+      <div class="footer-links">
+        <a href="#" onclick="alert('Created to help learners master German verbs!'); return false;">About</a>
+        <a href="#" onclick="alert('Contact: support@germanverbs.app'); return false;">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="practice.js"></script>
+</body>
+</html>
