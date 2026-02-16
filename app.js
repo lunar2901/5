@@ -1,13 +1,5 @@
-// app.js - Study mode (1 verb at a time)
-import { initStudyMode } from './study-mode.js';
-
-// ✅ IMPORTANT:
-// Keep your existing imports for verbs DB here.
-// Example:
-// import verbsA1 from './js/verbs-db-a1.js';
-// ...and build your verbsDB like you did in nouns.js.
-
-// --- Example structure (replace with YOUR actual DB imports) ---
+// app.js - Focus mode (1 verb at a time + accordion lists)
+import { initFocusMode } from './focus-mode.js';
 import verbsA1 from './js/verbs-db-a1.js';
 
 const verbsDB = {
@@ -17,7 +9,6 @@ const verbsDB = {
   b2: [],
   c1: []
 };
-// ------------------------------------------------------------
 
 const levelBtns = document.querySelectorAll('.level-btn');
 const searchInput = document.getElementById('search-input');
@@ -58,12 +49,13 @@ function filterVerbs(level, query) {
   if (!query) return list;
 
   return list.filter(v => {
-    const front = v.infinitive || v.verb || v.word || '';
+    const base = getVerbBase(v);
     const searchText = [
-      front,
+      base,
       v.preposition,
       ...(v.translations || []),
-      ...(v.examples || [])
+      ...(v.examples || []),
+      v.present || v.past || v.partizip2 || v.perfect || ''
     ].filter(Boolean).join(' ').toLowerCase();
 
     return searchText.includes(query);
@@ -78,7 +70,7 @@ function renderCurrent(query = '') {
     return;
   }
 
-  // Optional: make it styled like study-root
+  // helps CSS override to single-column
   root.classList.add('study-root');
 
   const list = filterVerbs(currentLevel, query);
@@ -94,30 +86,97 @@ function renderCurrent(query = '') {
     return;
   }
 
-  initStudyMode({
+  initFocusMode({
     rootId,
     items: list,
     level: currentLevel,
     storageKey: 'verbs',
 
-    getId: (item) => item.infinitive || item.verb || item.word,
-    getFront: (item) => item.infinitive || item.verb || item.word || '—',
-    getBack: (item) => (item.translations || []).join(', '),
-    getExtra: (item) => formatVerbExtra(item)
+    getId: (v) => getVerbBase(v),        // stable unique key
+    getLabel: (v) => getVerbBase(v),     // shows in Learned/Not learned list
+    renderCard: (v) => createVerbCard(v) // your verb card UI
   });
 }
 
-function formatVerbExtra(v) {
-  const prep = v.preposition ? `With: ${v.preposition}` : '';
-  const forms =
-    v.forms ? `Forms: ${v.forms}` :
-    v.conjugation ? `Conjugation: ${JSON.stringify(v.conjugation)}` :
-    '';
+function getVerbBase(v) {
+  return v.infinitive || v.verb || v.word || '—';
+}
 
-  const examples = (v.examples || []).slice(0, 2);
-  const exText = examples.length ? `Examples: ${examples.join(' | ')}` : '';
+// ✅ Verb card using your existing CSS (.verb-card, .verb-forms, etc.)
+function createVerbCard(v) {
+  const card = document.createElement('div');
+  card.className = 'verb-card';
 
-  return [prep, forms, exText].filter(Boolean).join('\n');
+  const base = getVerbBase(v);
+
+  // Try common field names (so it works even if your DB schema varies)
+  const present = v.present || v.prasens || v.presens || v.ich || v.form1 || '—';
+  const past = v.past || v.prateritum || v.präteritum || v.simplePast || '—';
+  const partizip2 = v.partizip2 || v.participle || v.pp || v.perfectParticiple || '—';
+
+  const translations = (v.translations || []).join(', ') || '—';
+
+  const isReflexive = !!v.reflexive || String(base).toLowerCase().startsWith('sich ');
+  const reflexiveTag = isReflexive ? `<span class="reflexive-marker">reflexive</span>` : '';
+
+  // Preposition(s)
+  const prep = v.preposition
+    ? `<span class="prep-badge">${escapeHtml(v.preposition)}</span>`
+    : '';
+
+  card.innerHTML = `
+    <div class="verb-header">
+      <div>
+        <div class="verb-base">${escapeHtml(base)} ${reflexiveTag}</div>
+      </div>
+    </div>
+
+    <div class="verb-forms">
+      <div class="form-item">
+        <span class="form-label">Present</span>
+        <span class="form-value">${escapeHtml(present)}</span>
+      </div>
+      <div class="form-item">
+        <span class="form-label">Past</span>
+        <span class="form-value">${escapeHtml(past)}</span>
+      </div>
+      <div class="form-item" style="grid-column: 1 / -1;">
+        <span class="form-label">Partizip II</span>
+        <span class="form-value">${escapeHtml(partizip2)}</span>
+      </div>
+    </div>
+
+    <div class="verb-info">
+      <span class="label">Translation:</span>
+      <span class="value">${escapeHtml(translations)}</span>
+    </div>
+
+    ${
+      prep
+        ? `
+          <div class="verb-info">
+            <span class="label">Prep:</span>
+            <span class="value">${prep}</span>
+          </div>
+        `
+        : ''
+    }
+
+    ${
+      (v.examples || []).length
+        ? `
+          <div class="examples-section">
+            <h4>Examples</h4>
+            <ul class="examples-list">
+              ${(v.examples || []).slice(0, 4).map(ex => `<li>${escapeHtml(ex)}</li>`).join('')}
+            </ul>
+          </div>
+        `
+        : ''
+    }
+  `;
+
+  return card;
 }
 
 function updateCounts() {
