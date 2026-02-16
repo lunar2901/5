@@ -1596,3 +1596,131 @@ body.zen-mode .word-card-host {
   font-size:13px;
 }
 
+/* ==========================
+   SLEEK MINIMAL OVERRIDES
+   Paste at the very bottom
+   ========================== */
+
+/* Make the whole site retail-clean */
+body{
+  background: #fff !important;
+  color: #111 !important;
+}
+
+/* Reduce page vertical padding */
+.main-content{
+  padding: 18px 0 !important;
+}
+
+/* Remove the big hero block entirely (since you want minimal) */
+.hero{
+  display: none !important;
+}
+
+/* Make sections flat + minimal (no big cards) */
+.level-section,
+.search-section,
+.verbs-section{
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-bottom: 16px !important;
+}
+
+/* Level buttons: slimmer and more “tab-like” */
+.level-buttons{
+  display:flex !important;
+  flex-wrap: wrap;
+  gap: 10px !important;
+}
+
+.level-btn{
+  flex-direction: row !important;
+  gap: 8px !important;
+  padding: 8px 10px !important;
+  border-radius: 999px !important;
+  border: 1px solid #e8e8e8 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.level-btn.active{
+  background:#111 !important;
+  border-color:#111 !important;
+  color:#fff !important;
+}
+
+.level-badge{ font-size: 13px !important; }
+.level-name{ font-size: 12px !important; }
+
+/* Search: compact inline style */
+.search-container{
+  margin-bottom: 10px !important;
+}
+
+.search-input{
+  border: 1px solid #e8e8e8 !important;
+  border-radius: 0 !important;
+  padding: 10px 12px 10px 40px !important;
+  box-shadow: none !important;
+}
+
+.search-input:focus{
+  border-color:#111 !important;
+  box-shadow: none !important;
+}
+
+/* Verb list container: minimal */
+.verbs-list{
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+  gap: 14px !important;
+}
+
+/* Verb cards: remove “puffy app card” look */
+.verb-card{
+  background: #fff !important;
+  border: 1px solid #e8e8e8 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 14px !important;
+}
+
+.verb-card:hover{
+  transform: none !important;
+  border-color: #111 !important;
+  box-shadow: none !important;
+}
+
+.verb-base{
+  color:#111 !important;
+}
+
+/* ===== Kill the big centered Vocabulary List panel (your screenshot) ===== */
+.vocab-panel{
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Make those grey rows slim (if still used anywhere) */
+.vocab-row{
+  background: #fff !important;
+  border: 1px solid #e8e8e8 !important;
+  border-radius: 0 !important;
+  padding: 10px 12px !important;
+  margin-top: 10px !important;
+  font-weight: 600 !important;
+}
+.vocab-title{
+  color:#111 !important;
+  font-size: 14px !important;
+  letter-spacing:.10em;
+  text-transform: uppercase;
+  margin-bottom: 10px !important;
+}
+
