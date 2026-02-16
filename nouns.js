@@ -1,9 +1,10 @@
-// nouns.js - Display logic for German nouns
+// nouns.js - Study-mode logic for German nouns (1 word per view)
 import nounsA1 from './js/nouns-db-a1.js';
+import { initStudyMode } from './study-mode.js';
 
 const nounsDB = {
   a1: nounsA1,
-  a2: [],  // Will be populated
+  a2: [],
   b1: [],
   b2: [],
   c1: []
@@ -11,14 +12,13 @@ const nounsDB = {
 
 const levelBtns = document.querySelectorAll('.level-btn');
 const searchInput = document.getElementById('search-input');
-const nounsListDiv = document.getElementById('nouns-list');
 const nounCount = document.getElementById('noun-count');
 const clearSearchBtn = document.getElementById('clear-search');
 
 let currentLevel = 'a1';
 
 // Initialize
-displayNouns(currentLevel);
+renderCurrent();
 updateCounts();
 
 // Level buttons
@@ -26,17 +26,20 @@ levelBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     levelBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+
     currentLevel = btn.dataset.level;
     searchInput.value = '';
-    displayNouns(currentLevel);
+    clearSearchBtn.style.display = 'none';
+
+    renderCurrent();
   });
 });
 
 // Search
 searchInput.addEventListener('input', (e) => {
   const query = e.target.value.trim().toLowerCase();
-  displayNouns(currentLevel, query);
   clearSearchBtn.style.display = query ? 'block' : 'none';
+  renderCurrent(query);
 });
 
 clearSearchBtn.addEventListener('click', () => {
@@ -46,95 +49,102 @@ clearSearchBtn.addEventListener('click', () => {
 });
 
 function filterNouns(level, query) {
-  const nouns = nounsDB[level];
+  const nouns = nounsDB[level] || [];
   if (!query) return nouns;
-  
+
   return nouns.filter(noun => {
     const searchText = [
       noun.word,
       noun.plural,
-      ...noun.translations,
-      ...noun.examples
-    ].join(' ').toLowerCase();
+      noun.genitive,
+      ...(noun.translations || []),
+      ...(noun.examples || [])
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+
     return searchText.includes(query);
   });
 }
 
-function displayNouns(level, query = '') {
-  const nouns = query ? filterNouns(level, query) : nounsDB[level];
-  
-  nounsListDiv.innerHTML = '';
-  
-  if (nouns.length === 0) {
-    nounsListDiv.innerHTML = `
-      <div class="no-results">
-        <p>No nouns found${query ? ` matching "${query}"` : ' in this level'}</p>
-      </div>
-    `;
-    nounCount.textContent = '0 nouns';
+function renderCurrent(query = '') {
+  const nouns = filterNouns(currentLevel, query);
+
+  // Optional: keep your old count label updated
+  nounCount.textContent = `${nouns.length} ${nouns.length === 1 ? 'noun' : 'nouns'}`;
+
+  // If nothing found, show a small message inside study-root
+  const root = document.getElementById('study-root');
+  if (!root) {
+    console.error('Missing #study-root in nouns.html. Replace #nouns-list with #study-root.');
     return;
   }
-  
-  nouns.forEach(noun => {
-    const card = createNounCard(noun);
-    nounsListDiv.appendChild(card);
+
+  if (nouns.length === 0) {
+    root.innerHTML = `
+      <div class="no-results">
+        <p>No nouns found${query ? ` matching "${escapeHtml(query)}"` : ' in this level'}</p>
+      </div>
+    `;
+    return;
+  }
+
+  // ✅ This replaces the old "render many cards" logic:
+  initStudyMode({
+    rootId: 'study-root',
+    items: nouns,
+    level: currentLevel,
+    storageKey: 'nouns',
+
+    // Unique id for learned/unlearned storage:
+    getId: (item) => item.word, // word includes article (e.g. "der Hund") — good unique key
+
+    // What appears big on the card:
+    getFront: (item) => formatNounFront(item),  // e.g. "der Hund"
+
+    // What appears as translation:
+    getBack: (item) => (item.translations || []).join(', '),
+
+    // Extra section (plural/genitive/examples):
+    getExtra: (item) => formatNounExtra(item)
   });
-  
-  nounCount.textContent = `${nouns.length} ${nouns.length === 1 ? 'noun' : 'nouns'}`;
 }
 
-function createNounCard(noun) {
-  const card = document.createElement('div');
-  card.className = 'noun-card';
-  
-  const genderClass = noun.gender === 'm' ? 'masculine' : noun.gender === 'f' ? 'feminine' : 'neuter';
-  const genderText = noun.gender === 'm' ? 'der' : noun.gender === 'f' ? 'die' : 'das';
-  
-  card.innerHTML = `
-    <div class="noun-header">
-      <h3 class="noun-word">
-        <span class="gender-badge ${genderClass}">${genderText}</span>
-        ${noun.word.split(' ')[1] || noun.word}
-      </h3>
-    </div>
-    
-    <div class="noun-forms">
-      <div class="form-item">
-        <span class="form-label">Plural:</span>
-        <span class="form-value">${noun.plural}</span>
-      </div>
-      <div class="form-item">
-        <span class="form-label">Genitive:</span>
-        <span class="form-value">${noun.genitive}</span>
-      </div>
-    </div>
-    
-    <div class="noun-info">
-      <span class="label">Translation:</span>
-      <span class="value">${noun.translations.join(', ')}</span>
-    </div>
-    
-    <div class="noun-examples">
-      <span class="label">Examples:</span>
-      <ul>
-        ${noun.examples.map(ex => `<li>${ex}</li>`).join('')}
-      </ul>
-    </div>
-  `;
-  
-  return card;
+function formatNounFront(noun) {
+  // Show the noun with article badge-style text baked in
+  // Example noun.word might already be "der Hund"
+  // If it's just "Hund", we'll add the article.
+  const article =
+    noun.gender === 'm' ? 'der' :
+    noun.gender === 'f' ? 'die' :
+    noun.gender === 'n' ? 'das' : '';
+
+  const hasArticle = typeof noun.word === 'string' && noun.word.split(' ').length > 1;
+  const word = noun.word || '—';
+
+  return hasArticle || !article ? word : `${article} ${word}`;
+}
+
+function formatNounExtra(noun) {
+  const plural = noun.plural ? `Plural: ${noun.plural}` : '';
+  const genitive = noun.genitive ? `Genitive: ${noun.genitive}` : '';
+  const examples = (noun.examples || []).slice(0, 2); // keep it focused
+
+  const parts = [plural, genitive].filter(Boolean).join(' • ');
+  const exText = examples.length ? `Examples: ${examples.join(' | ')}` : '';
+
+  return [parts, exText].filter(Boolean).join('\n');
 }
 
 function updateCounts() {
   Object.keys(nounsDB).forEach(level => {
     const badge = document.getElementById(`count-${level}`);
-    if (badge) {
-      badge.textContent = nounsDB[level].length;
-    }
+    if (badge) badge.textContent = (nounsDB[level] || []).length;
   });
 }
 
-// Keyboard shortcuts
+// Keyboard shortcuts (keep your old ones)
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
     e.preventDefault();
@@ -145,3 +155,12 @@ document.addEventListener('keydown', (e) => {
     searchInput.dispatchEvent(new Event('input'));
   }
 });
+
+function escapeHtml(s) {
+  return String(s ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
