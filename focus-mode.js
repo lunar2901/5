@@ -87,17 +87,30 @@ export function initFocusMode({
       <section class="word-card-host" id="focus-card-host"></section>
     `;
 
-    const cardHost = root.querySelector("#focus-card-host");
-    cardHost.replaceChildren(renderCard(currentItem, index));
+    // Swipe navigation on touch devices (works even when menus are hidden)
+  if (cardHost) {
+    let x0 = null;
+    let y0 = null;
+    cardHost.addEventListener('touchstart', (e) => {
+      const t = e.touches && e.touches[0];
+      if (!t) return;
+      x0 = t.clientX;
+      y0 = t.clientY;
+    }, { passive: true });
+  
+    cardHost.addEventListener('touchend', (e) => {
+      const t = e.changedTouches && e.changedTouches[0];
+      if (!t || x0 == null || y0 == null) return;
+      const dx = t.clientX - x0;
+      const dy = t.clientY - y0;
+      x0 = null;
+      y0 = null;
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+      if (dx < 0) next();
+      else prev();
+    }, { passive: true });
+  }
 
-    root.querySelector('[data-action="prev"]')?.addEventListener("click", prev);
-    root.querySelector('[data-action="next"]')?.addEventListener("click", next);
-
-    // keyboard
-    window.onkeydown = (e) => {
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
-    };
 
     // swipe
     let x0 = null, y0 = null;
