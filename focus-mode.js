@@ -1,6 +1,4 @@
-// focus-mode.js - Focus mode UI + learned/unlearned lists API
-// This module is imported by verbs (app.js), nouns.js, adjectives.js, adverbs.js.
-
+// focus-mode.js (minimal on-page UI + drawer lists API)
 export function initFocusMode({
   rootId = "study-root",
   items = [],
@@ -13,7 +11,7 @@ export function initFocusMode({
     el.textContent = getLabel(item);
     return el;
   },
-} = {}) {
+}) {
   const root = document.getElementById(rootId);
   if (!root) throw new Error(`Missing #${rootId}`);
 
@@ -89,47 +87,48 @@ export function initFocusMode({
       <section class="word-card-host" id="focus-card-host"></section>
     `;
 
-    // Render card content
-    const cardHost = root.querySelector("#focus-card-host");
-    if (cardHost) {
-      cardHost.innerHTML = "";
-      const cardEl = renderCard(currentItem);
-      if (cardEl) cardHost.appendChild(cardEl);
+    // Swipe navigation on touch devices (works even when menus are hidden)
+  if (cardHost) {
+    let x0 = null;
+    let y0 = null;
+    cardHost.addEventListener('touchstart', (e) => {
+      const t = e.touches && e.touches[0];
+      if (!t) return;
+      x0 = t.clientX;
+      y0 = t.clientY;
+    }, { passive: true });
+  
+    cardHost.addEventListener('touchend', (e) => {
+      const t = e.changedTouches && e.changedTouches[0];
+      if (!t || x0 == null || y0 == null) return;
+      const dx = t.clientX - x0;
+      const dy = t.clientY - y0;
+      x0 = null;
+      y0 = null;
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+      if (dx < 0) next();
+      else prev();
+    }, { passive: true });
+  }
 
-      // Swipe navigation on touch devices
-      let x0 = null;
-      let y0 = null;
-      cardHost.addEventListener(
-        "touchstart",
-        (e) => {
-          const t = e.touches && e.touches[0];
-          if (!t) return;
-          x0 = t.clientX;
-          y0 = t.clientY;
-        },
-        { passive: true }
-      );
 
-      cardHost.addEventListener(
-        "touchend",
-        (e) => {
-          const t = e.changedTouches && e.changedTouches[0];
-          if (!t || x0 == null || y0 == null) return;
-          const dx = t.clientX - x0;
-          const dy = t.clientY - y0;
-          x0 = null;
-          y0 = null;
-          if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-          if (dx < 0) next();
-          else prev();
-        },
-        { passive: true }
-      );
-    }
+    // swipe
+    let x0 = null, y0 = null;
+    cardHost.addEventListener("touchstart", (e) => {
+      const t = e.touches && e.touches[0];
+      if (!t) return;
+      x0 = t.clientX; y0 = t.clientY;
+    }, { passive: true });
 
-    // Buttons
-    root.querySelector('[data-action="prev"]')?.addEventListener("click", prev);
-    root.querySelector('[data-action="next"]')?.addEventListener("click", next);
+    cardHost.addEventListener("touchend", (e) => {
+      const t = e.changedTouches && e.changedTouches[0];
+      if (!t || x0 == null || y0 == null) return;
+      const dx = t.clientX - x0;
+      const dy = t.clientY - y0;
+      x0 = null; y0 = null;
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+      if (dx < 0) next(); else prev();
+    }, { passive: true });
   }
 
   const api = {
@@ -154,7 +153,7 @@ export function initFocusMode({
     prev,
     setLearned,
     toggleLearned,
-    onChange: null, // assigned by page scripts
+    onChange: null, // you assign this from app.js
   };
 
   render();
